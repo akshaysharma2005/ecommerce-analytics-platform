@@ -9,6 +9,8 @@ __pycache__/
 # Virtual Environment
 # =========================
 .venv/
+.venv*/
+.venv_mac_backup/
 venv/
 env/
 
