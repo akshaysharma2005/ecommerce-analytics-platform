@@ -48,9 +48,26 @@ Responsible for customer-level analytics and segmentation.
 
 Responsible for product, category, seller and revenue analytics.
 
-### Member 4 — Machine Learning & Forecasting
+### Member 4 — Machine Learning, Forecasting & Presentation
 
-Responsible for customer-level machine learning and revenue forecasting.
+Responsible for:
+
+- Feature engineering across transaction, RFM, delivery, and sentiment signals
+- Customer churn prediction (Gradient Boosting & Random Forest)
+- Unsupervised customer clustering (K-Means & 3D PCA)
+- Time-series sales and revenue forecasting (Holt-Winters with seasonality)
+- Interactive Streamlit presentation application
+- Synthesis of Members 1–3 outputs and final strategic business recommendations
+
+## Running the Streamlit Dashboard
+
+To launch the interactive dashboard:
+
+```bash
+python3 -m streamlit run app.py --server.port 8502
+```
+
+Open your browser at `http://localhost:8502`.
 
 ## Technology Stack
 
