@@ -1,0 +1,87 @@
+{
+  "elbow_curve": [
+    {
+      "k": 2,
+      "inertia": 62626.46
+    },
+    {
+      "k": 3,
+      "inertia": 54226.03
+    },
+    {
+      "k": 4,
+      "inertia": 46509.61
+    },
+    {
+      "k": 5,
+      "inertia": 40031.5
+    },
+    {
+      "k": 6,
+      "inertia": 34676.53
+    },
+    {
+      "k": 7,
+      "inertia": 29390.15
+    }
+  ],
+  "pca_variance_ratio": [
+    0.3455,
+    0.149,
+    0.1428
+  ],
+  "cluster_profiles": [
+    {
+      "cluster_id": 0,
+      "cluster_name": "VIP Champions",
+      "customer_count": 67744,
+      "customer_pct": 70.97,
+      "avg_recency_days": 237.8,
+      "avg_orders": 1.0,
+      "avg_spending": 99.36,
+      "avg_aov": 99.36,
+      "avg_review_score": 4.15,
+      "avg_installments": 1.67,
+      "avg_freight_ratio": 0.24
+    },
+    {
+      "cluster_id": 1,
+      "cluster_name": "At-Risk High Spenders",
+      "customer_count": 22999,
+      "customer_pct": 24.09,
+      "avg_recency_days": 262.6,
+      "avg_orders": 1.0,
+      "avg_spending": 253.25,
+      "avg_aov": 253.25,
+      "avg_review_score": 3.95,
+      "avg_installments": 6.2,
+      "avg_freight_ratio": 0.1264
+    },
+    {
+      "cluster_id": 2,
+      "cluster_name": "Recent Emerging Buyers",
+      "customer_count": 1868,
+      "customer_pct": 1.96,
+      "avg_recency_days": 243.8,
+      "avg_orders": 1.02,
+      "avg_spending": 1320.19,
+      "avg_aov": 1299.93,
+      "avg_review_score": 3.92,
+      "avg_installments": 6.3,
+      "avg_freight_ratio": 0.0607
+    },
+    {
+      "cluster_id": 3,
+      "cluster_name": "Value & Bargain Seekers",
+      "customer_count": 2847,
+      "customer_pct": 2.98,
+      "avg_recency_days": 226.5,
+      "avg_orders": 2.11,
+      "avg_spending": 288.79,
+      "avg_aov": 136.54,
+      "avg_review_score": 4.15,
+      "avg_installments": 3.26,
+      "avg_freight_ratio": 0.2004
+    }
+  ]
+}

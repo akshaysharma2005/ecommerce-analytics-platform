@@ -1,0 +1,117 @@
+{
+  "model_name": "Gradient Boosting Churn Classifier",
+  "accuracy": 0.9928,
+  "precision": 0.9898,
+  "recall": 0.9983,
+  "f1_score": 0.9941,
+  "roc_auc": 0.9998,
+  "confusion_matrix": [
+    [
+      9278,
+      148
+    ],
+    [
+      24,
+      14415
+    ]
+  ],
+  "feature_importances": [
+    {
+      "feature": "tenure_days",
+      "importance": 0.9881
+    },
+    {
+      "feature": "total_orders",
+      "importance": 0.0084
+    },
+    {
+      "feature": "freight_ratio",
+      "importance": 0.0007
+    },
+    {
+      "feature": "avg_review_score",
+      "importance": 0.0007
+    },
+    {
+      "feature": "total_spend",
+      "importance": 0.0006
+    },
+    {
+      "feature": "avg_order_value",
+      "importance": 0.0005
+    },
+    {
+      "feature": "avg_installments",
+      "importance": 0.0003
+    },
+    {
+      "feature": "total_items",
+      "importance": 0.0002
+    },
+    {
+      "feature": "uses_credit_card",
+      "importance": 0.0002
+    },
+    {
+      "feature": "uses_boleto",
+      "importance": 0.0002
+    },
+    {
+      "feature": "has_returned",
+      "importance": 0.0001
+    },
+    {
+      "feature": "basket_size",
+      "importance": 0.0001
+    },
+    {
+      "feature": "has_bad_review",
+      "importance": 0.0
+    }
+  ],
+  "roc_curve": [
+    {
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.3681
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.9044
+    },
+    {
+      "fpr": 0.0,
+      "tpr": 0.9536
+    },
+    {
+      "fpr": 0.0045,
+      "tpr": 0.9842
+    },
+    {
+      "fpr": 0.0124,
+      "tpr": 0.9953
+    },
+    {
+      "fpr": 0.0353,
+      "tpr": 1.0
+    }
+  ],
+  "feature_cols": [
+    "total_orders",
+    "total_items",
+    "total_spend",
+    "avg_order_value",
+    "freight_ratio",
+    "avg_installments",
+    "uses_credit_card",
+    "uses_boleto",
+    "avg_review_score",
+    "has_bad_review",
+    "has_returned",
+    "basket_size",
+    "tenure_days"
+  ]
+}

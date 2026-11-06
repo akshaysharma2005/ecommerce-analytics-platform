@@ -23,13 +23,15 @@ env/
 # Raw / Processed Data
 # =========================
 data/raw/*
-data/processed/*
+data/processed/*.csv
+data/processed/*.parquet
 data/validation/*
 
 # Keep folder structure in Git
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/validation/.gitkeep
+data/processed/analytics_member4/customer_ml_features.csv
 
 # =========================
 # Environment / Secrets

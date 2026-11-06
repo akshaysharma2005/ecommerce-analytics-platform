@@ -44,30 +44,41 @@ Responsible for:
 
 Responsible for customer-level analytics and segmentation.
 
-### Member 3 — Product & Revenue Analytics
+### Member 3 — Product, Revenue & Marketing Analytics
 
-Responsible for product, category, seller and revenue analytics.
+Responsible for:
+- Revenue Analytics: Monthly revenue growth, AOV trends, regional distribution, and category revenue share
+- Product Analytics: Best-selling items, product profitability, low-margin diagnosis, and return-heavy product tracking
+- Marketing Analytics: Campaign performance, channel CAC vs. ROAS, marketing spend attribution, and conversion efficiency
+- Production SQL layer with 4 analytical views and 11 end-to-end analytical query modules
 
 ### Member 4 — Machine Learning, Forecasting & Presentation
 
 Responsible for:
+- Machine Learning: Feature engineering across transaction, RFM, delivery, and sentiment signals (95,458 profiles)
+- Churn Prediction Model: Gradient Boosting Classifier (**ROC-AUC: 0.9998**, Accuracy: 99.28%, F1: 0.9941)
+- Customer Segmentation: Unsupervised K-Means clustering ($k=4$) projected across interactive 3D and 2D PCA spaces
+- Revenue Forecasting: 12-Month Holt-Winters Damped Exponential Smoothing with seasonality multipliers and 95% confidence intervals
+- Presentation Applications: Interactive SaaS Web Dashboard (Flask + ApexCharts) and Streamlit Presentation Suite
+- Strategic Business Recommendations: 5 operational pillars and 12-month implementation roadmap
 
-- Feature engineering across transaction, RFM, delivery, and sentiment signals
-- Customer churn prediction (Gradient Boosting & Random Forest)
-- Unsupervised customer clustering (K-Means & 3D PCA)
-- Time-series sales and revenue forecasting (Holt-Winters with seasonality)
-- Interactive Streamlit presentation application
-- Synthesis of Members 1–3 outputs and final strategic business recommendations
+## Launching the Presentation Dashboards
 
-## Running the Streamlit Dashboard
+### Option 1: Modern Interactive Web Application (Flask + ApexCharts)
+High-aesthetic SaaS dashboard with real-time year filtering (`All Time`, `2018`, `2017`, `2016`), Top Sales sorting, live Churn Simulator, 3D PCA cluster visualization, and scenario forecasting:
 
-To launch the interactive dashboard:
+```bash
+python3 web/server.py
+```
+Open your browser at **`http://localhost:5050`**.
+
+### Option 2: Streamlit Presentation Application
+Interactive presentation dashboard covering Members 1–4 outputs:
 
 ```bash
 python3 -m streamlit run app.py --server.port 8502
 ```
-
-Open your browser at `http://localhost:8502`.
+Open your browser at **`http://localhost:8502`**.
 
 ## Technology Stack
 

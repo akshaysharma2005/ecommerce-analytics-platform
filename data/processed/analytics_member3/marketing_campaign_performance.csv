@@ -1,0 +1,7 @@
+campaign_id,campaign_name,channel,campaign_type,total_impressions,total_clicks,total_marketing_spend,total_leads,total_orders_acquired,total_attributed_revenue,overall_ctr_pct,avg_cpc,overall_cvr_pct,cac,roas,marketing_roi_pct
+CMP-SEM-GEN,Google Ads - Shopping & Generic Non-Brand,Paid Search,Performance / Acquisition,29838645,924998,674844.59,259000,29600,4993849.87,3.1,0.73,3.2,22.8,7.4,122.0
+CMP-SOC-PRO,Meta Ads - Prospecting & Lookalike,Paid Social,Customer Acquisition,54401103,1033621,704201.2,289412,21706,3661846.26,1.9,0.68,2.1,32.44,5.2,56.0
+CMP-SOC-RET,Meta Ads - Dynamic Product Retargeting,Paid Social,Retargeting,6731972,255815,270850.39,71629,13814,2329313.34,3.8,1.06,5.4,19.61,8.6,158.0
+CMP-EML-AUT,Automated Email & Lifecycle Flows,Email Marketing,Retention & Repeat,5873522,246688,88803.51,69073,11841,1998078.63,4.2,0.36,4.8,7.5,22.5,575.0
+CMP-SEM-BRD,Google Ads - Brand Search,Paid Search,Brand Defense,1857425,157881,140647.73,44209,11841,1997197.32,8.5,0.89,7.5,11.88,14.2,326.0
+CMP-AFF-PAR,Affiliate & Influencer Partner Network,Affiliate,Partner Acquisition,14095760,352394,244728.88,98670,9867,1664156.47,2.5,0.69,2.8,24.8,6.8,104.0

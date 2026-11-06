@@ -1,0 +1,21 @@
+rank,category,total_orders,total_units_sold,total_revenue,revenue_share_pct,aov,gross_profit,return_rate_pct,net_profit_contribution,net_profit_margin_pct,avg_review_score,strategic_quadrant
+1,health_beauty,8836,9670,1441248.07,9.1,163.11,528646.16,2.03,502755.49,34.88,4.14,Star (Core Leader)
+2,watches_gifts,5624,5991,1305541.61,8.24,232.14,482002.27,2.8,437675.87,33.52,4.02,Cash Cow (Volume Driver)
+3,bed_bath_table,9417,11115,1241681.72,7.84,131.86,331836.38,1.78,308312.98,24.83,3.9,Cash Cow (Volume Driver)
+4,sports_leisure,7720,8641,1156656.48,7.3,149.83,345817.14,2.18,314883.43,27.22,4.11,Star (Core Leader)
+5,computers_accessories,6689,7827,1059272.4,6.69,158.36,200629.95,2.89,162731.48,15.36,3.93,Cash Cow (Volume Driver)
+6,furniture_decor,6449,8334,902511.79,5.7,139.95,248119.25,1.99,227729.33,25.23,3.9,Cash Cow (Volume Driver)
+7,housewares,5884,6964,778397.77,4.91,132.29,189674.6,2.66,168457.87,21.64,4.06,Underperformer / Watchlist
+8,cool_stuff,3632,3796,719329.95,4.54,198.05,222351.8,2.13,192367.81,26.74,4.15,Underperformer / Watchlist
+9,auto,3897,4235,685384.32,4.33,175.87,154107.23,2.08,132608.9,19.35,4.07,Underperformer / Watchlist
+10,garden_tools,3518,4347,584219.21,3.69,166.07,135871.81,1.82,120967.72,20.71,4.04,Underperformer / Watchlist
+11,toys,3886,4117,561372.55,3.54,144.46,174220.78,2.7,157220.18,28.01,4.16,Underperformer / Watchlist
+12,baby,2885,3065,480118.0,3.03,166.42,144117.71,2.97,131433.71,27.38,4.01,Underperformer / Watchlist
+13,perfumery,3162,3419,453338.71,2.86,143.37,179606.19,1.96,172722.18,38.1,4.16,Question Mark (High Potential)
+14,telephony,4199,4545,394883.32,2.49,94.04,64733.51,2.35,52630.9,13.33,3.95,Underperformer / Watchlist
+15,office_furniture,1273,1691,342532.65,2.16,269.08,65750.57,3.96,51673.6,15.09,3.49,Underperformer / Watchlist
+16,stationery,2311,2517,277741.71,1.75,120.18,87758.43,2.15,81273.53,29.26,4.19,Underperformer / Watchlist
+17,pet_shop,1710,1947,253876.65,1.6,148.47,64294.62,1.59,60960.89,24.01,4.19,Question Mark (High Potential)
+18,computers,181,203,232799.43,1.47,1286.18,66888.94,2.46,61621.35,26.47,4.18,Underperformer / Watchlist
+19,musical_instruments,628,680,210137.37,1.33,334.61,57449.66,3.68,50115.57,23.85,4.15,Underperformer / Watchlist
+20,Unknown,1451,1603,207705.09,1.31,143.15,53860.58,3.37,48161.01,23.19,3.84,Underperformer / Watchlist

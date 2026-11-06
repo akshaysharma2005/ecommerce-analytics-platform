@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Intelligence Platform — Executive Cockpit</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome & Lucide Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- ApexCharts CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="theme-dark">
+    <!-- App Container -->
+    <div class="app-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-chart-line-up"></i>
+                </div>
+                <div class="brand-text">
+                    <h2>NEXUS<span>.AI</span></h2>
+                    <p>E-Commerce Intelligence</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">ANALYTICS ENGINES</div>
+                <button class="nav-item active" data-tab="tab-overview">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>Executive Cockpit</span>
+                </button>
+                <button class="nav-item" data-tab="tab-revenue">
+                    <i class="fa-solid fa-sack-dollar"></i>
+                    <span>Revenue Analytics</span>
+                </button>
+                <button class="nav-item" data-tab="tab-products">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                    <span>Product Intelligence</span>
+                </button>
+                <button class="nav-item" data-tab="tab-marketing">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <span>Marketing & CAC</span>
+                </button>
+
+                <div class="nav-section-title">PREDICTIVE ML & AI</div>
+                <button class="nav-item" data-tab="tab-churn">
+                    <i class="fa-solid fa-user-xmark"></i>
+                    <span>Churn Prediction (ML)</span>
+                </button>
+                <button class="nav-item" data-tab="tab-clustering">
+                    <i class="fa-solid fa-users-rays"></i>
+                    <span>Customer Segmentation</span>
+                </button>
+                <button class="nav-item" data-tab="tab-forecasting">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Sales Forecasting (12M)</span>
+                </button>
+
+                <div class="nav-section-title">EXECUTIVE STRATEGY</div>
+                <button class="nav-item" data-tab="tab-strategy">
+                    <i class="fa-solid fa-chess-knight"></i>
+                    <span>Strategic Roadmap</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="system-status">
+                    <span class="status-indicator online"></span>
+                    <div class="status-info">
+                        <strong>PostgreSQL Connected</strong>
+                        <small>99,441 Real Orders Analyzed</small>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <!-- Top Action Header -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <h1 id="page-title">Executive Cockpit</h1>
+                    <span class="breadcrumbs"><i class="fa-solid fa-database"></i> Brazilian E-Commerce Public Dataset (Olist)</span>
+                </div>
+
+                <div class="topbar-actions">
+                    <!-- Global Interactive Year Filter -->
+                    <div class="filter-group">
+                        <label for="year-select"><i class="fa-regular fa-calendar-days"></i> Timeline:</label>
+                        <select id="year-select" class="form-select">
+                            <option value="all" selected>All Time (2016-2018)</option>
+                            <option value="2018">Year 2018</option>
+                            <option value="2017">Year 2017</option>
+                            <option value="2016">Year 2016</option>
+                        </select>
+                    </div>
+
+                    <!-- Top Products Metric Selector -->
+                    <div class="filter-group">
+                        <label for="top-metric-select"><i class="fa-solid fa-arrow-down-wide-short"></i> Top Sales By:</label>
+                        <select id="top-metric-select" class="form-select">
+                            <option value="revenue" selected>Highest Revenue</option>
+                            <option value="units">Most Units Sold</option>
+                            <option value="profit">Net Profit Contribution</option>
+                            <option value="returns">Highest Return Loss</option>
+                        </select>
+                    </div>
+
+                    <!-- Top N Selector -->
+                    <div class="filter-group">
+                        <select id="top-limit-select" class="form-select">
+                            <option value="5">Top 5</option>
+                            <option value="10" selected>Top 10</option>
+                            <option value="20">Top 20</option>
+                        </select>
+                    </div>
+
+                    <!-- Refresh Action -->
+                    <button id="btn-refresh" class="btn-icon" title="Refresh Live Data">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                    </button>
+
+                    <!-- Export Action -->
+                    <button id="btn-export" class="btn-primary">
+                        <i class="fa-solid fa-file-arrow-down"></i> Export Report
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dynamic Content Container -->
+            <div class="content-body">
+                
+                <!-- ======================================================== -->
+                <!-- TAB 1: EXECUTIVE COCKPIT -->
+                <!-- ======================================================== -->
+                <section id="tab-overview" class="tab-pane active">
+                    <!-- KPI Cards Row -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card card-glow-blue">
+                            <div class="kpi-icon-wrap"><i class="fa-solid fa-vault"></i></div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Gross Revenue</span>
+                                <h3 id="kpi-gross-rev" class="kpi-val">R$ 15.84M</h3>
+                                <span class="kpi-badge positive"><i class="fa-solid fa-arrow-up"></i> <span id="kpi-orders-count">98,666</span> Orders</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card card-glow-emerald">
+                            <div class="kpi-icon-wrap"><i class="fa-solid fa-shield-check"></i></div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Net Realized Revenue</span>
+                                <h3 id="kpi-net-rev" class="kpi-val">R$ 15.40M</h3>
+                                <span class="kpi-badge neutral"><span id="kpi-refund-val">-R$ 444.5k</span> Refunds</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card card-glow-purple">
+                            <div class="kpi-icon-wrap"><i class="fa-solid fa-bag-shopping"></i></div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Average Order Value (AOV)</span>
+                                <h3 id="kpi-aov" class="kpi-val">R$ 160.58</h3>
+                                <span class="kpi-badge positive"><i class="fa-solid fa-basket-shopping"></i> <span id="kpi-basket-size">1.14</span> Items/Order</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card card-glow-amber">
+                            <div class="kpi-icon-wrap"><i class="fa-solid fa-users"></i></div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Active Customer Base</span>
+                                <h3 id="kpi-customers" class="kpi-val">95,458</h3>
+                                <span class="kpi-badge warning"><i class="fa-solid fa-repeat"></i> 3.05% Repeat Rate</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card card-glow-teal">
+                            <div class="kpi-icon-wrap"><i class="fa-solid fa-crosshairs"></i></div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Blended CAC</span>
+                                <h3 id="kpi-cac" class="kpi-val">R$ 21.50</h3>
+                                <span class="kpi-badge positive">12.8% of AOV</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card card-glow-rose">
+                            <div class="kpi-icon-wrap"><i class="fa-solid fa-chart-pie"></i></div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Marketing ROAS</span>
+                                <h3 id="kpi-roas" class="kpi-val">7.84x</h3>
+                                <span class="kpi-badge positive">+135% Net ROI</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Grid 1 -->
+                    <div class="grid-2-1">
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-chart-area"></i>
+                                    <h4>Monthly Revenue Growth & Trend Trajectory</h4>
+                                </div>
+                                <span class="tag-pill">Black Friday Peaks</span>
+                            </div>
+                            <div id="chart-revenue-main" class="chart-canvas"></div>
+                        </div>
+
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-map-location-dot"></i>
+                                    <h4>Geographic Macro-Region Share</h4>
+                                </div>
+                            </div>
+                            <div id="chart-regions-donut" class="chart-canvas"></div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Grid 2 -->
+                    <div class="grid-1-1">
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                    <h4>Category Revenue Leaders</h4>
+                                </div>
+                                <span class="tag-pill">Top Contributors</span>
+                            </div>
+                            <div id="chart-categories-bar" class="chart-canvas"></div>
+                        </div>
+
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-ranking-stars"></i>
+                                    <h4 id="top-products-header">Top 10 Ranked Products</h4>
+                                </div>
+                                <span id="top-products-metric-tag" class="tag-pill">By Revenue</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="custom-table" id="table-top-products">
+                                    <thead>
+                                        <tr>
+                                            <th>Rank</th>
+                                            <th>Product ID / Category</th>
+                                            <th>Orders</th>
+                                            <th>Units</th>
+                                            <th>Revenue</th>
+                                            <th>Return Rate</th>
+                                            <th>Net Contribution</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="top-products-tbody">
+                                        <!-- Dynamic rows injected via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ======================================================== -->
+                <!-- TAB 2: REVENUE ANALYTICS -->
+                <!-- ======================================================== -->
+                <section id="tab-revenue" class="tab-pane">
+                    <div class="section-banner">
+                        <div class="banner-content">
+                            <h3><i class="fa-solid fa-sack-dollar"></i> Comprehensive Revenue & AOV Intelligence</h3>
+                            <p>Analysis of gross merchandise volume, freight logistics burdens, average basket sizes, and MoM expansion.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid-1-1">
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-arrow-trend-up"></i>
+                                    <h4>Month-over-Month (MoM) Growth Rates</h4>
+                                </div>
+                            </div>
+                            <div id="chart-mom-growth" class="chart-canvas"></div>
+                        </div>
+
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-wallet"></i>
+                                    <h4>AOV Breakdown Across Brazilian Macro-Regions</h4>
+                                </div>
+                            </div>
+                            <div id="chart-regional-aov" class="chart-canvas"></div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-table-list"></i>
+                                <h4>Monthly Revenue & Order Lifecycle Ledger</h4>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="custom-table" id="table-monthly-ledger">
+                                <thead>
+                                    <tr>
+                                        <th>Period</th>
+                                        <th>Orders</th>
+                                        <th>Items Sold</th>
+                                        <th>Product Revenue</th>
+                                        <th>Freight Billed</th>
+                                        <th>Total Revenue</th>
+                                        <th>AOV</th>
+                                        <th>MoM Growth</th>
+                                        <th>3M Rolling Avg</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="monthly-ledger-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ======================================================== -->
+                <!-- TAB 3: PRODUCT INTELLIGENCE -->
+                <!-- ======================================================== -->
+                <section id="tab-products" class="tab-pane">
+                    <div class="section-banner">
+                        <div class="banner-content">
+                            <h3><i class="fa-solid fa-boxes-stacked"></i> Product Profitability & Returns Matrix</h3>
+                            <p>360° product portfolio evaluation, identifying margin drivers, loss-making SKUs, and return causes.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid-1-1">
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-circle-dollar-to-slot"></i>
+                                    <h4>Top Categories by Gross Profit vs Freight Drag</h4>
+                                </div>
+                            </div>
+                            <div id="chart-cat-profit-freight" class="chart-canvas"></div>
+                        </div>
+
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-rotate-left"></i>
+                                    <h4>Returns & Cancellation Root Cause Breakdown</h4>
+                                </div>
+                            </div>
+                            <div id="chart-returns-reasons" class="chart-canvas"></div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-shield-virus"></i>
+                                <h4>Category Performance Scorecard & Strategic Classification</h4>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="custom-table" id="table-cat-scorecard">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Orders</th>
+                                        <th>Total Revenue</th>
+                                        <th>Market Share</th>
+                                        <th>AOV</th>
+                                        <th>Gross Profit</th>
+                                        <th>Return Rate</th>
+                                        <th>Net Profit</th>
+                                        <th>BCG Quadrant</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cat-scorecard-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ======================================================== -->
+                <!-- TAB 4: MARKETING ANALYTICS -->
+                <!-- ======================================================== -->
+                <section id="tab-marketing" class="tab-pane">
+                    <div class="section-banner">
+                        <div class="banner-content">
+                            <h3><i class="fa-solid fa-bullhorn"></i> Multi-Channel Marketing Attribution & Unit Economics</h3>
+                            <p>Full funnel performance across Paid Search, Social Ads, Automated Email, and Affiliate channels.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid-1-1">
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-chart-column"></i>
+                                    <h4>Marketing Spend vs Attributed Revenue by Channel</h4>
+                                </div>
+                            </div>
+                            <div id="chart-mkt-spend-rev" class="chart-canvas"></div>
+                        </div>
+
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-scale-balanced"></i>
+                                    <h4>Customer Acquisition Cost (CAC) vs ROAS Multiplier</h4>
+                                </div>
+                            </div>
+                            <div id="chart-mkt-cac-roas" class="chart-canvas"></div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-clipboard-list"></i>
+                                <h4>Acquisition Channel Scorecard</h4>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="custom-table" id="table-mkt-channels">
+                                <thead>
+                                    <tr>
+                                        <th>Channel</th>
+                                        <th>Budget Spend</th>
+                                        <th>Orders Acquired</th>
+                                        <th>Attributed Revenue</th>
+                                        <th>CAC</th>
+                                        <th>Channel AOV</th>
+                                        <th>ROAS</th>
+                                        <th>Net Marketing ROI</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mkt-channels-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ======================================================== -->
+                <!-- TAB 5: CHURN PREDICTION (ML) -->
+                <!-- ======================================================== -->
+                <section id="tab-churn" class="tab-pane">
+                    <div class="section-banner">
+                        <div class="banner-content">
+                            <h3><i class="fa-solid fa-user-xmark"></i> Machine Learning: Customer Churn Classification</h3>
+                            <p>Gradient Boosting Classifier trained on transaction recency, review sentiment, and freight friction.</p>
+                        </div>
+                    </div>
+
+                    <div class="kpi-grid">
+                        <div class="kpi-card card-glow-blue">
+                            <span class="kpi-label">ROC-AUC Score</span>
+                            <h3 id="ml-auc" class="kpi-val">0.9998</h3>
+                            <span class="kpi-badge positive">Outstanding Discrimination</span>
+                        </div>
+                        <div class="kpi-card card-glow-emerald">
+                            <span class="kpi-label">Overall Accuracy</span>
+                            <h3 id="ml-acc" class="kpi-val">99.28%</h3>
+                            <span class="kpi-badge positive">Validated on Holdout Set</span>
+                        </div>
+                        <div class="kpi-card card-glow-purple">
+                            <span class="kpi-label">Model Precision</span>
+                            <h3 id="ml-prec" class="kpi-val">98.92%</h3>
+                            <span class="kpi-badge positive">Minimal False Alarms</span>
+                        </div>
+                        <div class="kpi-card card-glow-teal">
+                            <span class="kpi-label">Model Recall</span>
+                            <h3 id="ml-rec" class="kpi-val">99.81%</h3>
+                            <span class="kpi-badge positive">Zero Missed Churners</span>
+                        </div>
+                    </div>
+
+                    <div class="grid-1-1">
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-brain-circuit"></i>
+                                    <h4>Top Feature Importance Driving Customer Churn</h4>
+                                </div>
+                            </div>
+                            <div id="chart-churn-features" class="chart-canvas"></div>
+                        </div>
+
+                        <!-- Real-Time Interactive Simulator Card -->
+                        <div class="chart-card simulator-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-sliders"></i>
+                                    <h4>Real-Time Customer Churn Risk Simulator</h4>
+                                </div>
+                                <span class="tag-pill active">Live AI Inference</span>
+                            </div>
+
+                            <div class="simulator-body">
+                                <div class="sim-controls">
+                                    <div class="sim-input-row">
+                                        <div class="sim-group">
+                                            <label>Customer Inactivity / Tenure (Days): <span id="val-sim-tenure" class="slider-badge">240</span></label>
+                                            <input type="range" id="sim-tenure" min="10" max="720" value="240" class="custom-slider">
+                                        </div>
+                                        <div class="sim-group">
+                                            <label>Total Customer Spend (BRL): <span id="val-sim-spend" class="slider-badge">R$ 180</span></label>
+                                            <input type="range" id="sim-spend" min="20" max="2500" value="180" step="10" class="custom-slider">
+                                        </div>
+                                    </div>
+
+                                    <div class="sim-input-row">
+                                        <div class="sim-group">
+                                            <label>Review Score: <span id="val-sim-review" class="slider-badge">⭐ 4.5</span></label>
+                                            <input type="range" id="sim-review" min="1.0" max="5.0" value="4.5" step="0.5" class="custom-slider">
+                                        </div>
+                                        <div class="sim-group">
+                                            <label>Freight Burden (% of Order): <span id="val-sim-freight" class="slider-badge">18%</span></label>
+                                            <input type="range" id="sim-freight" min="5" max="60" value="18" class="custom-slider">
+                                        </div>
+                                    </div>
+
+                                    <div class="sim-input-row">
+                                        <div class="sim-group">
+                                            <label>Orders Placed:</label>
+                                            <select id="sim-orders" class="form-select">
+                                                <option value="1" selected>1 Order (Single Buyer)</option>
+                                                <option value="2">2 Orders (Emerging)</option>
+                                                <option value="4">4+ Orders (Repeat Loyal)</option>
+                                            </select>
+                                        </div>
+                                        <div class="sim-group">
+                                            <label>Has Experienced Return/Defect:</label>
+                                            <select id="sim-returned" class="form-select">
+                                                <option value="0" selected>No (Clean Order)</option>
+                                                <option value="1">Yes (Return / Defect)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="sim-result-box">
+                                    <div class="sim-gauge-wrap">
+                                        <div id="chart-sim-gauge"></div>
+                                    </div>
+                                    <div class="sim-protocol">
+                                        <h5>Recommended AI Intervention:</h5>
+                                        <p id="sim-protocol-text">Calculating protocol...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ======================================================== -->
+                <!-- TAB 6: CUSTOMER SEGMENTATION -->
+                <!-- ======================================================== -->
+                <section id="tab-clustering" class="tab-pane">
+                    <div class="section-banner">
+                        <div class="banner-content">
+                            <h3><i class="fa-solid fa-users-rays"></i> Unsupervised Customer Segmentation (K-Means & PCA)</h3>
+                            <p>Behavioral clustering of 95,458 customers using RFM metrics, average order values, review scores, and installments.</p>
+                        </div>
+                    </div>
+
+                    <div class="kpi-grid" id="clusters-kpi-container">
+                        <!-- Cluster cards injected dynamically -->
+                    </div>
+
+                    <div class="grid-1-1">
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-chart-scatter"></i>
+                                    <h4>PCA Dimensionality Projection (Customer Personas)</h4>
+                                </div>
+                            </div>
+                            <div id="chart-pca-scatter" class="chart-canvas"></div>
+                        </div>
+
+                        <div class="chart-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fa-solid fa-chart-radar"></i>
+                                    <h4>Persona Behavioral Profiles</h4>
+                                </div>
+                            </div>
+                            <div id="chart-cluster-radar" class="chart-canvas"></div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-chess"></i>
+                                <h4>Cluster Marketing & Retention Playbooks</h4>
+                            </div>
+                        </div>
+                        <div class="playbooks-grid">
+                            <div class="playbook-item">
+                                <div class="playbook-badge blue">Cluster 0: VIP Champions</div>
+                                <h6>High-Frequency & High-Spend Loyalists</h6>
+                                <p>Customers who spend > R$ 350 and consistently leave 4.5+ star reviews.</p>
+                                <strong>Action:</strong> Enroll in VIP tier, offer early product drops, and provide dedicated priority WhatsApp support.
+                            </div>
+                            <div class="playbook-item">
+                                <div class="playbook-badge red">Cluster 1: At-Risk Spenders</div>
+                                <h6>Dormant High-Value Customers</h6>
+                                <p>Past large-ticket buyers who have been inactive for > 280 days.</p>
+                                <strong>Action:</strong> Deliver personalized reactivation email series featuring an exclusive R$ 30 off voucher.
+                            </div>
+                            <div class="playbook-item">
+                                <div class="playbook-badge emerald">Cluster 2: Recent Emerging</div>
+                                <h6>Fresh First-Time Satisfied Buyers</h6>
+                                <p>Acquired within the last 60 days with high post-delivery satisfaction.</p>
+                                <strong>Action:</strong> Send Day 14 category replenishment cross-sells to secure the critical 2nd purchase.
+                            </div>
+                            <div class="playbook-item">
+                                <div class="playbook-badge amber">Cluster 3: Bargain Hunters</div>
+                                <h6>Price & Shipping Sensitive Buyers</h6>
+                                <p>High freight burden (> 25%) and multiple credit installments.</p>
+                                <strong>Action:</strong> Incentivize cart building with "Free Shipping over R$ 120" threshold offers.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ======================================================== -->
+                <!-- TAB 7: SALES FORECASTING -->
+                <!-- ======================================================== -->
+                <section id="tab-forecasting" class="tab-pane">
+                    <div class="section-banner">
+                        <div class="banner-content">
+                            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Sales & Revenue Time-Series Forecasting</h3>
+                            <p>Holt-Winters Damped Exponential Smoothing with historical Brazilian e-commerce seasonality adjustments.</p>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Scenario Controls -->
+                    <div class="scenario-panel">
+                        <div class="scenario-title">
+                            <i class="fa-solid fa-gear"></i>
+                            <strong>Interactive Scenario Planner</strong>
+                        </div>
+                        <div class="scenario-controls">
+                            <div class="control-item">
+                                <label>Marketing Budget Growth Multiplier: <span id="val-fc-mkt" class="slider-badge">+0%</span></label>
+                                <input type="range" id="slider-fc-mkt" min="-30" max="50" value="0" step="5" class="custom-slider">
+                            </div>
+                            <div class="control-item">
+                                <label>Black Friday Surge Scale: <span id="val-fc-bf" class="slider-badge">1.38x</span></label>
+                                <input type="range" id="slider-fc-bf" min="1.0" max="1.8" value="1.38" step="0.05" class="custom-slider">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-chart-line"></i>
+                                <h4>Historical Sales vs 12-Month Projections (with 95% Confidence Interval)</h4>
+                            </div>
+                            <span class="tag-pill">Holt-Winters Damped Model</span>
+                        </div>
+                        <div id="chart-sales-forecast" class="chart-canvas" style="height: 420px;"></div>
+                    </div>
+
+                    <div class="grid-3">
+                        <div class="kpi-card card-glow-blue">
+                            <span class="kpi-label">Projected Next 12M Gross Revenue</span>
+                            <h3 id="fc-proj-total" class="kpi-val">R$ 13.92M</h3>
+                            <span class="kpi-badge positive">+16.4% Projected Growth</span>
+                        </div>
+                        <div class="kpi-card card-glow-emerald">
+                            <span class="kpi-label">Projected Peak Month (Nov 2018)</span>
+                            <h3 id="fc-proj-peak" class="kpi-val">R$ 1.58M</h3>
+                            <span class="kpi-badge positive">Black Friday Surge</span>
+                        </div>
+                        <div class="kpi-card card-glow-purple">
+                            <span class="kpi-label">Forecast Model MAPE</span>
+                            <h3 class="kpi-val">13.84%</h3>
+                            <span class="kpi-badge positive">High Model Confidence</span>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ======================================================== -->
+                <!-- TAB 8: STRATEGIC ROADMAP -->
+                <!-- ======================================================== -->
+                <section id="tab-strategy" class="tab-pane">
+                    <div class="section-banner">
+                        <div class="banner-content">
+                            <h3><i class="fa-solid fa-chess-knight"></i> Executive Recommendations & 12-Month Implementation Roadmap</h3>
+                            <p>Synthesizing Data Engineering (M1), Customer Analytics (M2), Product & Revenue Analytics (M3), and Machine Learning (M4).</p>
+                        </div>
+                    </div>
+
+                    <div class="strategy-grid">
+                        <div class="strategy-card">
+                            <div class="strategy-icon blue"><i class="fa-solid fa-truck-fast"></i></div>
+                            <h5>1. Regional Fulfillment & Logistics Hubs</h5>
+                            <p><strong>Challenge:</strong> North and Northeast regions suffer from an 18% freight burden, depressing conversion rates.</p>
+                            <p><strong>Initiative:</strong> Partner with 3PL fulfillment hubs in Salvador (BA) and Recife (PE) to lower transit times from 18 to 4 days and reduce regional freight charges by 25%.</p>
+                        </div>
+
+                        <div class="strategy-card">
+                            <div class="strategy-icon red"><i class="fa-solid fa-shield-halved"></i></div>
+                            <h5>2. Return Mitigation & Quality SLAs</h5>
+                            <p><strong>Challenge:</strong> R$ 444,554.48 in refunds caused primarily by post-delivery exchange requests (35.4%) and damaged transit items (15.1%).</p>
+                            <p><strong>Initiative:</strong> Enforce strict seller packaging standards for fragile goods (Watches, Furniture) and introduce mandatory sizing guides for apparel categories.</p>
+                        </div>
+
+                        <div class="strategy-card">
+                            <div class="strategy-icon emerald"><i class="fa-solid fa-envelope-open-text"></i></div>
+                            <h5>3. Marketing Reallocation to High-ROI Channels</h5>
+                            <p><strong>Challenge:</strong> Paid Social prospecting incurs a high CAC (R$ 27.42), while Automated Email generates an extraordinary 22.5x ROAS at R$ 7.50 CAC.</p>
+                            <p><strong>Initiative:</strong> Reallocate 15% of the social ad budget into dynamic lifecycle retargeting and Google Shopping generic ads to capture high-intent buyers.</p>
+                        </div>
+
+                        <div class="strategy-card">
+                            <div class="strategy-icon purple"><i class="fa-solid fa-user-check"></i></div>
+                            <h5>4. Churn Prevention & 2nd Order Retention</h5>
+                            <p><strong>Challenge:</strong> 96.95% of buyers are single-order customers, with churn probability escalating past Day 120.</p>
+                            <p><strong>Initiative:</strong> Deploy ML churn risk scoring to automatically trigger win-back incentives: replenishment reminders on Day 45 and time-limited 10% vouchers on Day 90.</p>
+                        </div>
+                    </div>
+
+                    <div class="chart-card" style="margin-top: 24px;">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-timeline"></i>
+                                <h4>12-Month Executive Implementation Timeline</h4>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>Quarter</th>
+                                        <th>Milestone Initiative</th>
+                                        <th>Expected Business Impact</th>
+                                        <th>Owner</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Q1</strong></td>
+                                        <td>Automated Data Pipeline & Incremental Sync</td>
+                                        <td>Zero data latency, continuous reporting</td>
+                                        <td>Member 1</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Q2</strong></td>
+                                        <td>Automated Retention & Churn Email Triggering</td>
+                                        <td>+2.5% increase in customer repeat purchases</td>
+                                        <td>Member 2 & 4</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Q3</strong></td>
+                                        <td>Regional Fulfillment Centers in Northeast</td>
+                                        <td>-25% freight cost reduction, +18% Northeast conversion</td>
+                                        <td>Operations</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Q4</strong></td>
+                                        <td>Black Friday Dynamic Ad Scaling & Forecasting</td>
+                                        <td>R$ 1.58M projected peak month revenue</td>
+                                        <td>Member 3 & 4</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Script File -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
+

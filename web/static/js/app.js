@@ -1,0 +1,797 @@
+/**
+ * NEXUS.AI — FRONTEND CONTROLLER & INTERACTIVE VISUALIZATION ENGINE
+ * Powered by ApexCharts and Vanilla JS
+ */
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Global State
+    const state = {
+        year: "all",
+        topMetric: "revenue",
+        topLimit: 10,
+        currentTab: "tab-overview",
+        charts: {}
+    };
+
+    // DOM Elements
+    const yearSelect = document.getElementById("year-select");
+    const topMetricSelect = document.getElementById("top-metric-select");
+    const topLimitSelect = document.getElementById("top-limit-select");
+    const navItems = document.querySelectorAll(".nav-item");
+    const tabPanes = document.querySelectorAll(".tab-pane");
+    const btnRefresh = document.getElementById("btn-refresh");
+    const btnExport = document.getElementById("btn-export");
+
+    // =================================================================
+    // 1. NAVIGATION TAB SWITCHING
+    // =================================================================
+    navItems.forEach(item => {
+        item.addEventListener("click", () => {
+            const tabId = item.getAttribute("data-tab");
+            if (tabId === state.currentTab) return;
+
+            navItems.forEach(n => n.classList.remove("active"));
+            tabPanes.forEach(p => p.classList.remove("active"));
+
+            item.classList.add("active");
+            document.getElementById(tabId).classList.add("active");
+            state.currentTab = tabId;
+
+            // Set Page Title
+            const titleMap = {
+                "tab-overview": "Executive Cockpit",
+                "tab-revenue": "Revenue & AOV Analytics",
+                "tab-products": "Product Intelligence & Profitability",
+                "tab-marketing": "Multi-Channel Marketing Attribution",
+                "tab-churn": "Predictive ML: Churn Classification",
+                "tab-clustering": "Unsupervised Customer Segmentation",
+                "tab-forecasting": "12-Month Sales & Revenue Forecasting",
+                "tab-strategy": "Strategic Recommendations & Roadmap"
+            };
+            document.getElementById("page-title").textContent = titleMap[tabId] || "Executive Cockpit";
+
+            // Trigger chart reflow on tab change
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 100);
+        });
+    });
+
+    // =================================================================
+    // 2. GLOBAL CONTROLS & EVENT LISTENERS
+    // =================================================================
+    yearSelect.addEventListener("change", (e) => {
+        state.year = e.target.value;
+        refreshAllDashboardData();
+    });
+
+    topMetricSelect.addEventListener("change", (e) => {
+        state.topMetric = e.target.value;
+        const metricLabels = {
+            "revenue": "Highest Revenue",
+            "units": "Most Units Sold",
+            "profit": "Net Profit Contribution",
+            "returns": "Highest Return Loss"
+        };
+        document.getElementById("top-products-metric-tag").textContent = metricLabels[state.topMetric];
+        loadTopProducts();
+    });
+
+    topLimitSelect.addEventListener("change", (e) => {
+        state.topLimit = parseInt(e.target.value, 10);
+        document.getElementById("top-products-header").textContent = `Top ${state.topLimit} Ranked Products`;
+        loadTopProducts();
+    });
+
+    btnRefresh.addEventListener("click", () => {
+        btnRefresh.querySelector("i").classList.add("fa-spin");
+        refreshAllDashboardData();
+        setTimeout(() => {
+            btnRefresh.querySelector("i").classList.remove("fa-spin");
+        }, 600);
+    });
+
+    btnExport.addEventListener("click", () => {
+        exportCurrentTableToCSV();
+    });
+
+    // =================================================================
+    // 3. DATA FETCHING & RENDERING ENGINES
+    // =================================================================
+
+    function refreshAllDashboardData() {
+        loadKPIs();
+        loadRevenueTrend();
+        loadTopProducts();
+        loadCategoryPerformance();
+        loadRegionalBreakdown();
+        loadMarketingPerformance();
+        loadChurnMetrics();
+        loadClusterSummary();
+        loadSalesForecast();
+    }
+
+    // 3.1 Load Executive KPIs
+    async function loadKPIs() {
+        try {
+            const res = await fetch(`/api/kpis?year=${state.year}`);
+            const data = await res.json();
+
+            document.getElementById("kpi-gross-rev").textContent = `R$ ${(data.gross_revenue / 1e6).toFixed(2)}M`;
+            document.getElementById("kpi-net-rev").textContent = `R$ ${(data.net_revenue / 1e6).toFixed(2)}M`;
+            document.getElementById("kpi-aov").textContent = `R$ ${data.aov.toFixed(2)}`;
+            document.getElementById("kpi-customers").textContent = Number(data.total_customers).toLocaleString();
+            document.getElementById("kpi-orders-count").textContent = Number(data.total_orders).toLocaleString();
+            document.getElementById("kpi-basket-size").textContent = data.basket_size.toFixed(2);
+            document.getElementById("kpi-refund-val").textContent = `-R$ ${(data.total_refund / 1e3).toFixed(1)}k`;
+            document.getElementById("kpi-cac").textContent = `R$ ${data.blended_cac.toFixed(2)}`;
+            document.getElementById("kpi-roas").textContent = `${data.roas.toFixed(2)}x`;
+        } catch (err) {
+            console.error("Error loading KPIs:", err);
+        }
+    }
+
+    // 3.2 Load Revenue Trend Chart & Monthly Ledger
+    async function loadRevenueTrend() {
+        try {
+            const res = await fetch(`/api/revenue-trend?year=${state.year}`);
+            const data = await res.json();
+
+            const categories = data.map(d => d.period_label);
+            const revenues = data.map(d => d.total_revenue);
+            const rollings = data.map(d => d.rolling_3m_avg);
+            const moms = data.map(d => d.mom_growth_pct);
+
+            // 1. Main Revenue Chart
+            const optionsRev = {
+                series: [
+                    { name: "Monthly Revenue (BRL)", type: "column", data: revenues },
+                    { name: "3M Moving Average", type: "line", data: rollings }
+                ],
+                chart: {
+                    height: 330,
+                    type: "line",
+                    toolbar: { show: false },
+                    background: "transparent",
+                    fontFamily: "Plus Jakarta Sans, sans-serif"
+                },
+                theme: { mode: "dark" },
+                stroke: { width: [0, 3], curve: "smooth", dashArray: [0, 5] },
+                colors: ["#3B82F6", "#F59E0B"],
+                plotOptions: {
+                    bar: { borderRadius: 4, columnWidth: "50%" }
+                },
+                dataLabels: { enabled: false },
+                xaxis: {
+                    categories: categories,
+                    labels: { style: { colors: "#94A3B8", fontSize: "11px" }, rotate: -45 },
+                    axisBorder: { show: false },
+                    axisTicks: { show: false }
+                },
+                yaxis: {
+                    labels: {
+                        style: { colors: "#94A3B8" },
+                        formatter: val => `R$ ${(val / 1e3).toFixed(0)}k`
+                    }
+                },
+                grid: { borderColor: "#1F2937", strokeDashArray: 4 },
+                legend: { position: "top", horizontalAlign: "right", labels: { colors: "#F8FAFC" } },
+                tooltip: {
+                    theme: "dark",
+                    y: { formatter: val => `R$ ${Number(val).toLocaleString(undefined, {minimumFractionDigits: 2})}` }
+                }
+            };
+
+            if (state.charts.revenueMain) state.charts.revenueMain.destroy();
+            state.charts.revenueMain = new ApexCharts(document.getElementById("chart-revenue-main"), optionsRev);
+            state.charts.revenueMain.render();
+
+            // 2. MoM Growth Chart in Revenue Tab
+            const optionsMoM = {
+                series: [{ name: "MoM Growth %", data: moms }],
+                chart: {
+                    height: 330,
+                    type: "bar",
+                    toolbar: { show: false },
+                    background: "transparent"
+                },
+                theme: { mode: "dark" },
+                colors: [({ value }) => value >= 0 ? "#10B981" : "#EF4444"],
+                plotOptions: {
+                    bar: {
+                        borderRadius: 3,
+                        colors: {
+                            ranges: [
+                                { from: -100, to: 0, color: '#EF4444' },
+                                { from: 0.01, to: 100000, color: '#10B981' }
+                            ]
+                        }
+                    }
+                },
+                xaxis: { categories: categories, labels: { style: { colors: "#94A3B8" }, rotate: -45 } },
+                yaxis: {
+                    labels: {
+                        style: { colors: "#94A3B8" },
+                        formatter: val => `${val.toFixed(1)}%`
+                    }
+                },
+                grid: { borderColor: "#1F2937" },
+                tooltip: { y: { formatter: val => `${val.toFixed(2)}%` } }
+            };
+
+            if (state.charts.momGrowth) state.charts.momGrowth.destroy();
+            state.charts.momGrowth = new ApexCharts(document.getElementById("chart-mom-growth"), optionsMoM);
+            state.charts.momGrowth.render();
+
+            // 3. Populate Monthly Ledger Table
+            const tbody = document.getElementById("monthly-ledger-tbody");
+            tbody.innerHTML = "";
+            data.forEach(row => {
+                const tr = document.createElement("tr");
+                const growthClass = row.mom_growth_pct >= 0 ? "text-emerald" : "text-rose";
+                tr.innerHTML = `
+                    <td><strong>${row.period_label}</strong></td>
+                    <td>${Number(row.total_orders).toLocaleString()}</td>
+                    <td>${Number(row.total_items).toLocaleString()}</td>
+                    <td>R$ ${Number(row.product_revenue).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    <td>R$ ${Number(row.freight_revenue).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    <td><strong>R$ ${Number(row.total_revenue).toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></td>
+                    <td>R$ ${Number(row.aov).toFixed(2)}</td>
+                    <td class="${growthClass}">${row.mom_growth_pct ? (row.mom_growth_pct > 0 ? '+' : '') + row.mom_growth_pct.toFixed(1) + '%' : '—'}</td>
+                    <td>R$ ${Number(row.rolling_3m_avg).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch (err) {
+            console.error("Error loading revenue trend:", err);
+        }
+    }
+
+    // 3.3 Load Top Products Interactive Table
+    async function loadTopProducts() {
+        try {
+            const res = await fetch(`/api/top-products?year=${state.year}&metric=${state.topMetric}&limit=${state.topLimit}`);
+            const data = await res.json();
+
+            const tbody = document.getElementById("top-products-tbody");
+            tbody.innerHTML = "";
+
+            data.forEach((p, index) => {
+                const tr = document.createElement("tr");
+                const returnBadge = p.return_rate_pct > 5.0 ? 
+                    `<span class="tag-pill" style="color: #F87171; background: rgba(239, 68, 68, 0.15);">${p.return_rate_pct.toFixed(1)}%</span>` :
+                    `<span class="tag-pill">${p.return_rate_pct.toFixed(1)}%</span>`;
+
+                tr.innerHTML = `
+                    <td class="table-rank">#${index + 1}</td>
+                    <td>
+                        <div style="font-weight: 600; color: white;">${formatCategory(p.category)}</div>
+                        <span class="product-code">${p.product_id.substring(0, 14)}...</span>
+                    </td>
+                    <td>${Number(p.total_orders).toLocaleString()}</td>
+                    <td>${Number(p.total_units_sold).toLocaleString()}</td>
+                    <td><strong>R$ ${Number(p.total_revenue).toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></td>
+                    <td>${returnBadge}</td>
+                    <td style="color: #34D399; font-weight: 600;">R$ ${Number(p.net_profit_contribution).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch (err) {
+            console.error("Error loading top products:", err);
+        }
+    }
+
+    // 3.4 Load Category Performance & BCG Scorecard
+    async function loadCategoryPerformance() {
+        try {
+            const res = await fetch(`/api/categories?year=${state.year}&limit=10`);
+            const data = await res.json();
+
+            const categories = data.map(d => formatCategory(d.category));
+            const revenues = data.map(d => d.total_revenue);
+            const profits = data.map(d => d.net_profit);
+
+            // Horizontal Bar in Overview
+            const optionsCat = {
+                series: [{ name: "Category Revenue", data: revenues }],
+                chart: {
+                    height: 330,
+                    type: "bar",
+                    toolbar: { show: false },
+                    background: "transparent"
+                },
+                theme: { mode: "dark" },
+                plotOptions: {
+                    bar: { horizontal: true, borderRadius: 4, barHeight: "65%" }
+                },
+                colors: ["#3B82F6"],
+                xaxis: {
+                    categories: categories,
+                    labels: { formatter: val => `R$ ${(val / 1e3).toFixed(0)}k`, style: { colors: "#94A3B8" } }
+                },
+                yaxis: { labels: { style: { colors: "#F8FAFC", fontSize: "11px" } } },
+                grid: { borderColor: "#1F2937" },
+                tooltip: { y: { formatter: val => `R$ ${Number(val).toLocaleString()}` } }
+            };
+
+            if (state.charts.catBar) state.charts.catBar.destroy();
+            state.charts.catBar = new ApexCharts(document.getElementById("chart-categories-bar"), optionsCat);
+            state.charts.catBar.render();
+
+            // Category Profit vs Freight in Product Tab
+            const optionsProfitFreight = {
+                series: [
+                    { name: "Net Profit Contribution", data: profits },
+                    { name: "Gross Revenue", data: revenues }
+                ],
+                chart: { height: 340, type: "bar", toolbar: { show: false }, background: "transparent" },
+                theme: { mode: "dark" },
+                colors: ["#10B981", "#3B82F6"],
+                plotOptions: { bar: { borderRadius: 4, columnWidth: "55%" } },
+                xaxis: { categories: categories, labels: { style: { colors: "#94A3B8" }, rotate: -35 } },
+                yaxis: { labels: { formatter: val => `R$ ${(val/1e3).toFixed(0)}k`, style: { colors: "#94A3B8" } } },
+                grid: { borderColor: "#1F2937" }
+            };
+            if (state.charts.profitFreight) state.charts.profitFreight.destroy();
+            state.charts.profitFreight = new ApexCharts(document.getElementById("chart-cat-profit-freight"), optionsProfitFreight);
+            state.charts.profitFreight.render();
+
+            // Populate Category Scorecard Table
+            const tbody = document.getElementById("cat-scorecard-tbody");
+            tbody.innerHTML = "";
+            data.forEach(c => {
+                const tr = document.createElement("tr");
+                const quadrant = c.revenue_share_pct >= 5.0 ? 
+                    (c.return_rate_pct < 2.5 ? '<span class="playbook-badge blue">Star</span>' : '<span class="playbook-badge amber">Cash Cow</span>') :
+                    '<span class="playbook-badge emerald">Question Mark</span>';
+
+                tr.innerHTML = `
+                    <td><strong>${formatCategory(c.category)}</strong></td>
+                    <td>${Number(c.total_orders).toLocaleString()}</td>
+                    <td>R$ ${Number(c.total_revenue).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    <td>${c.revenue_share_pct.toFixed(1)}%</td>
+                    <td>R$ ${Number(c.aov).toFixed(2)}</td>
+                    <td>R$ ${Number(c.gross_profit).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    <td>${c.return_rate_pct.toFixed(2)}%</td>
+                    <td style="color: #34D399; font-weight: 600;">R$ ${Number(c.net_profit).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    <td>${quadrant}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch (err) {
+            console.error("Error loading category performance:", err);
+        }
+    }
+
+    // 3.5 Load Regional Breakdown & Donut Chart
+    async function loadRegionalBreakdown() {
+        try {
+            const res = await fetch(`/api/regions?year=${state.year}`);
+            const data = await res.json();
+
+            const labels = data.map(d => d.macro_region);
+            const revenues = data.map(d => d.total_revenue);
+            const aovs = data.map(d => d.aov);
+
+            // Donut Chart in Overview
+            const optionsDonut = {
+                series: revenues,
+                labels: labels,
+                chart: { height: 330, type: "donut", background: "transparent" },
+                theme: { mode: "dark" },
+                colors: ["#2563EB", "#3B82F6", "#60A5FA", "#93C5FD", "#F59E0B"],
+                plotOptions: {
+                    pie: { donut: { size: "65%", labels: { show: true, total: { show: true, label: "Total", color: "#94A3B8" } } } }
+                },
+                dataLabels: { enabled: false },
+                legend: { position: "bottom", labels: { colors: "#F8FAFC" } },
+                stroke: { width: 0 }
+            };
+
+            if (state.charts.regionsDonut) state.charts.regionsDonut.destroy();
+            state.charts.regionsDonut = new ApexCharts(document.getElementById("chart-regions-donut"), optionsDonut);
+            state.charts.regionsDonut.render();
+
+            // Regional AOV in Revenue Tab
+            const optionsRegAOV = {
+                series: [{ name: "Regional AOV (BRL)", data: aovs }],
+                chart: { height: 330, type: "bar", toolbar: { show: false }, background: "transparent" },
+                theme: { mode: "dark" },
+                colors: ["#8B5CF6"],
+                plotOptions: { bar: { borderRadius: 4, columnWidth: "45%" } },
+                xaxis: { categories: labels, labels: { style: { colors: "#94A3B8" } } },
+                yaxis: { labels: { formatter: val => `R$ ${val.toFixed(0)}`, style: { colors: "#94A3B8" } } },
+                grid: { borderColor: "#1F2937" }
+            };
+            if (state.charts.regAOV) state.charts.regAOV.destroy();
+            state.charts.regAOV = new ApexCharts(document.getElementById("chart-regional-aov"), optionsRegAOV);
+            state.charts.regAOV.render();
+        } catch (err) {
+            console.error("Error loading regional data:", err);
+        }
+    }
+
+    // 3.6 Load Marketing Channels
+    async function loadMarketingPerformance() {
+        try {
+            const res = await fetch(`/api/marketing?year=${state.year}`);
+            const data = await res.json();
+
+            const channels = data.map(d => d.channel);
+            const spends = data.map(d => d.marketing_spend);
+            const revs = data.map(d => d.attributed_revenue);
+            const cacs = data.map(d => d.cac);
+            const roas = data.map(d => d.roas);
+
+            // Spend vs Revenue in Marketing Tab
+            const optionsMktSpend = {
+                series: [
+                    { name: "Marketing Spend", data: spends },
+                    { name: "Attributed Revenue", data: revs }
+                ],
+                chart: { height: 330, type: "bar", toolbar: { show: false }, background: "transparent" },
+                theme: { mode: "dark" },
+                colors: ["#EF4444", "#10B981"],
+                plotOptions: { bar: { borderRadius: 4, columnWidth: "50%" } },
+                xaxis: { categories: channels, labels: { style: { colors: "#94A3B8" } } },
+                yaxis: { labels: { formatter: val => `R$ ${(val/1e3).toFixed(0)}k`, style: { colors: "#94A3B8" } } },
+                grid: { borderColor: "#1F2937" }
+            };
+            if (state.charts.mktSpend) state.charts.mktSpend.destroy();
+            state.charts.mktSpend = new ApexCharts(document.getElementById("chart-mkt-spend-rev"), optionsMktSpend);
+            state.charts.mktSpend.render();
+
+            // CAC vs ROAS in Marketing Tab
+            const optionsCacRoas = {
+                series: [
+                    { name: "CAC (BRL)", type: "column", data: cacs },
+                    { name: "ROAS (x)", type: "line", data: roas }
+                ],
+                chart: { height: 330, type: "line", toolbar: { show: false }, background: "transparent" },
+                theme: { mode: "dark" },
+                colors: ["#F59E0B", "#10B981"],
+                plotOptions: { bar: { borderRadius: 4, columnWidth: "40%" } },
+                stroke: { width: [0, 3] },
+                xaxis: { categories: channels, labels: { style: { colors: "#94A3B8" } } },
+                yaxis: [
+                    { title: { text: "CAC (BRL)" }, labels: { formatter: val => `R$ ${val.toFixed(1)}` } },
+                    { opposite: true, title: { text: "ROAS Multiplier" }, labels: { formatter: val => `${val.toFixed(1)}x` } }
+                ],
+                grid: { borderColor: "#1F2937" }
+            };
+            if (state.charts.mktCacRoas) state.charts.mktCacRoas.destroy();
+            state.charts.mktCacRoas = new ApexCharts(document.getElementById("chart-mkt-cac-roas"), optionsCacRoas);
+            state.charts.mktCacRoas.render();
+
+            // Table
+            const tbody = document.getElementById("mkt-channels-tbody");
+            tbody.innerHTML = "";
+            data.forEach(ch => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><strong>${ch.channel}</strong></td>
+                    <td>R$ ${Number(ch.marketing_spend).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    <td>${Number(ch.total_orders).toLocaleString()}</td>
+                    <td><strong>R$ ${Number(ch.attributed_revenue).toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></td>
+                    <td style="color: #F87171;">R$ ${ch.cac.toFixed(2)}</td>
+                    <td>R$ ${ch.channel_aov.toFixed(2)}</td>
+                    <td style="color: #34D399; font-weight: 700;">${ch.roas.toFixed(1)}x</td>
+                    <td>+${ch.marketing_roi_pct.toFixed(1)}%</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch (err) {
+            console.error("Error loading marketing data:", err);
+        }
+    }
+
+    // 3.7 Load Return Reasons Donut
+    async function loadReturnReasons() {
+        const categories = ["Exchange Request", "Canceled Pre-Delivery", "Refund Request", "Defective/Damaged", "Dissatisfaction", "Out of Stock"];
+        const values = [35.4, 21.0, 17.2, 15.1, 11.0, 0.3];
+        const optionsRet = {
+            series: values,
+            labels: categories,
+            chart: { height: 330, type: "pie", background: "transparent" },
+            theme: { mode: "dark" },
+            colors: ["#3B82F6", "#EF4444", "#F59E0B", "#8B5CF6", "#10B981", "#64748B"],
+            legend: { position: "bottom", labels: { colors: "#F8FAFC" } },
+            stroke: { width: 0 },
+            tooltip: { y: { formatter: val => `${val}% of refunds` } }
+        };
+        if (state.charts.returnsReasons) state.charts.returnsReasons.destroy();
+        state.charts.returnsReasons = new ApexCharts(document.getElementById("chart-returns-reasons"), optionsRet);
+        state.charts.returnsReasons.render();
+    }
+    loadReturnReasons();
+
+    // 3.8 Load Churn Model Metrics & Simulator
+    async function loadChurnMetrics() {
+        try {
+            const res = await fetch("/api/churn-stats");
+            const data = await res.json();
+
+            if (data.roc_auc) {
+                document.getElementById("ml-auc").textContent = data.roc_auc.toFixed(4);
+                document.getElementById("ml-acc").textContent = `${(data.accuracy * 100).toFixed(2)}%`;
+                document.getElementById("ml-prec").textContent = `${(data.precision * 100).toFixed(2)}%`;
+                document.getElementById("ml-rec").textContent = `${(data.recall * 100).toFixed(2)}%`;
+
+                // Feature importance chart
+                const feats = data.feature_importances.slice(0, 8);
+                const optionsFeat = {
+                    series: [{ name: "Importance", data: feats.map(f => f.importance) }],
+                    chart: { height: 340, type: "bar", toolbar: { show: false }, background: "transparent" },
+                    theme: { mode: "dark" },
+                    plotOptions: { bar: { horizontal: true, borderRadius: 4, barHeight: "65%" } },
+                    colors: ["#8B5CF6"],
+                    xaxis: { categories: feats.map(f => formatCategory(f.feature)), labels: { style: { colors: "#94A3B8" } } },
+                    yaxis: { labels: { style: { colors: "#F8FAFC" } } },
+                    grid: { borderColor: "#1F2937" }
+                };
+                if (state.charts.churnFeats) state.charts.churnFeats.destroy();
+                state.charts.churnFeats = new ApexCharts(document.getElementById("chart-churn-features"), optionsFeat);
+                state.charts.churnFeats.render();
+            }
+        } catch (err) {
+            console.error("Error loading churn stats:", err);
+        }
+    }
+
+    // Initialize Simulator Gauge
+    let gaugeChart = null;
+    function initSimulatorGauge() {
+        const optionsGauge = {
+            series: [45],
+            chart: { height: 160, type: "radialBar", background: "transparent" },
+            plotOptions: {
+                radialBar: {
+                    hollow: { size: "60%" },
+                    track: { background: "#1F2937" },
+                    dataLabels: {
+                        name: { show: false },
+                        value: {
+                            color: "#3B82F6",
+                            fontSize: "22px",
+                            fontWeight: 700,
+                            offsetY: 6,
+                            formatter: val => `${val}%`
+                        }
+                    }
+                }
+            },
+            colors: ["#3B82F6"]
+        };
+        gaugeChart = new ApexCharts(document.getElementById("chart-sim-gauge"), optionsGauge);
+        gaugeChart.render();
+    }
+    initSimulatorGauge();
+
+    // Simulator Interactive Sliders
+    const simTenure = document.getElementById("sim-tenure");
+    const simSpend = document.getElementById("sim-spend");
+    const simReview = document.getElementById("sim-review");
+    const simFreight = document.getElementById("sim-freight");
+    const simOrders = document.getElementById("sim-orders");
+    const simReturned = document.getElementById("sim-returned");
+
+    function updateSimulatorPrediction() {
+        document.getElementById("val-sim-tenure").textContent = `${simTenure.value} days`;
+        document.getElementById("val-sim-spend").textContent = `R$ ${simSpend.value}`;
+        document.getElementById("val-sim-review").textContent = `⭐ ${parseFloat(simReview.value).toFixed(1)}`;
+        document.getElementById("val-sim-freight").textContent = `${simFreight.value}%`;
+
+        fetch("/api/predict-churn", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                tenure_days: parseFloat(simTenure.value),
+                total_spend: parseFloat(simSpend.value),
+                total_orders: parseFloat(simOrders.value),
+                avg_review_score: parseFloat(simReview.value),
+                freight_ratio: parseFloat(simFreight.value) / 100.0,
+                has_returned: simReturned.value === "1"
+            })
+        })
+        .then(res => res.json())
+        .then(result => {
+            const pct = result.churn_pct;
+            let clr = "#10B981";
+            if (pct >= 40 && pct < 75) clr = "#F59E0B";
+            else if (pct >= 75) clr = "#EF4444";
+
+            gaugeChart.updateOptions({
+                colors: [clr],
+                plotOptions: {
+                    radialBar: {
+                        dataLabels: {
+                            value: { color: clr, formatter: () => `${pct}%` }
+                        }
+                    }
+                }
+            });
+            gaugeChart.updateSeries([pct]);
+
+            document.getElementById("sim-protocol-text").innerHTML = `
+                <strong style="color: ${clr};">[${result.risk_level.toUpperCase()} RISK]</strong>: ${result.recommendation}
+            `;
+        })
+        .catch(err => console.error(err));
+    }
+
+    [simTenure, simSpend, simReview, simFreight, simOrders, simReturned].forEach(elem => {
+        elem.addEventListener("input", updateSimulatorPrediction);
+    });
+    updateSimulatorPrediction();
+
+    // 3.9 Load Clusters
+    async function loadClusterSummary() {
+        try {
+            const res = await fetch("/api/clusters");
+            const data = await res.json();
+            const profiles = data.summary.cluster_profiles || [];
+
+            const container = document.getElementById("clusters-kpi-container");
+            container.innerHTML = "";
+            const colors = ["blue", "rose", "emerald", "amber"];
+
+            profiles.forEach((p, idx) => {
+                const card = document.createElement("div");
+                card.className = `kpi-card card-glow-${colors[idx % 4]}`;
+                card.innerHTML = `
+                    <span class="kpi-label">Cluster ${p.cluster_id}: ${p.cluster_name}</span>
+                    <h3 class="kpi-val">${Number(p.customer_count).toLocaleString()}</h3>
+                    <div style="font-size: 0.75rem; color: #94A3B8; margin-top: 4px;">
+                        ${p.customer_pct}% Share • Avg Spend: R$ ${p.avg_spending.toFixed(0)} • ⭐ ${p.avg_review_score.toFixed(1)}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            // Scatter Plot for Sampled Points
+            const sample = data.pca_sample || [];
+            if (sample.length > 0) {
+                const clusterNames = {0: "VIP Champions", 1: "At-Risk Spenders", 2: "Recent Emerging", 3: "Bargain Seekers"};
+                const seriesData = [0, 1, 2, 3].map(cId => ({
+                    name: clusterNames[cId],
+                    data: sample.filter(s => s.cluster === cId).map(s => [s.pca_1, s.pca_2])
+                }));
+
+                const optionsScatter = {
+                    series: seriesData,
+                    chart: { height: 350, type: "scatter", toolbar: { show: false }, background: "transparent" },
+                    theme: { mode: "dark" },
+                    colors: ["#3B82F6", "#EF4444", "#10B981", "#F59E0B"],
+                    xaxis: { tickAmount: 6, labels: { style: { colors: "#94A3B8" } }, title: { text: "PCA Dimension 1" } },
+                    yaxis: { tickAmount: 6, labels: { style: { colors: "#94A3B8" } }, title: { text: "PCA Dimension 2" } },
+                    grid: { borderColor: "#1F2937" }
+                };
+                if (state.charts.pcaScatter) state.charts.pcaScatter.destroy();
+                state.charts.pcaScatter = new ApexCharts(document.getElementById("chart-pca-scatter"), optionsScatter);
+                state.charts.pcaScatter.render();
+            }
+
+            // Radar Chart for Cluster Attributes
+            const optionsRadar = {
+                series: profiles.map(p => ({
+                    name: p.cluster_name,
+                    data: [
+                        Math.min(p.avg_spending / 50, 10),
+                        p.avg_orders * 3,
+                        p.avg_review_score * 2,
+                        p.avg_installments * 2,
+                        (p.avg_recency_days / 365) * 10
+                    ]
+                })),
+                chart: { height: 350, type: "radar", toolbar: { show: false }, background: "transparent" },
+                theme: { mode: "dark" },
+                labels: ["Spending Level", "Frequency", "Satisfaction", "Installment Usage", "Recency (Inactivity)"],
+                colors: ["#3B82F6", "#EF4444", "#10B981", "#F59E0B"],
+                stroke: { width: 2 },
+                fill: { opacity: 0.15 },
+                markers: { size: 0 }
+            };
+            if (state.charts.clusterRadar) state.charts.clusterRadar.destroy();
+            state.charts.clusterRadar = new ApexCharts(document.getElementById("chart-cluster-radar"), optionsRadar);
+            state.charts.clusterRadar.render();
+        } catch (err) {
+            console.error("Error loading clusters:", err);
+        }
+    }
+
+    // 3.10 Load Sales Forecasting with Dynamic Scenario Planner
+    const sliderFcMkt = document.getElementById("slider-fc-mkt");
+    const sliderFcBF = document.getElementById("slider-fc-bf");
+
+    async function loadSalesForecast() {
+        const mktScale = sliderFcMkt.value;
+        const bfScale = sliderFcBF.value;
+
+        document.getElementById("val-fc-mkt").textContent = `${mktScale > 0 ? '+' : ''}${mktScale}%`;
+        document.getElementById("val-fc-bf").textContent = `${bfScale}x`;
+
+        try {
+            const res = await fetch(`/api/forecast?mkt_scale=${mktScale}&holiday_scale=${bfScale}`);
+            const data = await res.json();
+
+            const hist = data.historical || [];
+            const fc = data.forecast || [];
+
+            const allPeriods = [...hist.map(h => h.period), ...fc.map(f => f.period)];
+            const histValues = [...hist.map(h => h.actual_revenue), ...fc.map(() => null)];
+            const fcValues = [...hist.map(() => null), ...fc.map(f => f.forecast_revenue)];
+            const uppers = [...hist.map(() => null), ...fc.map(f => f.upper_bound_95)];
+            const lowers = [...hist.map(() => null), ...fc.map(f => f.lower_bound_95)];
+
+            const optionsForecast = {
+                series: [
+                    { name: "Historical Actuals", type: "line", data: histValues },
+                    { name: "12M Forward Forecast", type: "line", data: fcValues },
+                    { name: "Upper 95% Confidence Band", type: "line", data: uppers },
+                    { name: "Lower 95% Confidence Band", type: "line", data: lowers }
+                ],
+                chart: { height: 380, type: "line", toolbar: { show: false }, background: "transparent" },
+                theme: { mode: "dark" },
+                colors: ["#F8FAFC", "#3B82F6", "#60A5FA", "#60A5FA"],
+                stroke: { width: [3, 3.5, 1, 1], curve: "smooth", dashArray: [0, 0, 4, 4] },
+                xaxis: { categories: allPeriods, labels: { style: { colors: "#94A3B8" }, rotate: -45 } },
+                yaxis: { labels: { formatter: val => `R$ ${(val / 1e3).toFixed(0)}k`, style: { colors: "#94A3B8" } } },
+                grid: { borderColor: "#1F2937" },
+                legend: { position: "top", horizontalAlign: "right", labels: { colors: "#F8FAFC" } },
+                tooltip: { y: { formatter: val => val ? `R$ ${Number(val).toLocaleString(undefined, {minimumFractionDigits: 2})}` : '' } }
+            };
+
+            if (state.charts.salesForecast) state.charts.salesForecast.destroy();
+            state.charts.salesForecast = new ApexCharts(document.getElementById("chart-sales-forecast"), optionsForecast);
+            state.charts.salesForecast.render();
+
+            const totalProj = fc.reduce((acc, curr) => acc + curr.forecast_revenue, 0);
+            document.getElementById("fc-proj-total").textContent = `R$ ${(totalProj / 1e6).toFixed(2)}M`;
+            if (fc[2]) {
+                document.getElementById("fc-proj-peak").textContent = `R$ ${(fc[2].forecast_revenue / 1e6).toFixed(2)}M`;
+            }
+        } catch (err) {
+            console.error("Error loading forecast:", err);
+        }
+    }
+
+    [sliderFcMkt, sliderFcBF].forEach(elem => {
+        elem.addEventListener("input", loadSalesForecast);
+    });
+
+    // Helper: Format category string
+    function formatCategory(str) {
+        if (!str) return "General";
+        return str.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+    }
+
+    // Export current visible table to CSV
+    function exportCurrentTableToCSV() {
+        let activeTable = document.querySelector(".tab-pane.active table");
+        if (!activeTable) activeTable = document.querySelector("#table-top-products");
+        if (!activeTable) return;
+
+        let csv = [];
+        const rows = activeTable.querySelectorAll("tr");
+        for (let i = 0; i < rows.length; i++) {
+            let row = [], cols = rows[i].querySelectorAll("td, th");
+            for (let j = 0; j < cols.length; j++) {
+                row.push('"' + cols[j].innerText.replace(/"/g, '""').trim() + '"');
+            }
+            csv.push(row.join(","));
+        }
+
+        const csvContent = "data:text/csv;charset=utf-8," + csv.join("\n");
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `ecommerce_report_${state.year}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // Initial Dashboard Bootstrap
+    refreshAllDashboardData();
+});
+
