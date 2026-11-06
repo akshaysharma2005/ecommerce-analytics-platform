@@ -1,0 +1,34 @@
+{
+  "all": {
+    "total_customers": 95458,
+    "churn_rate_pct": 60.5,
+    "active_rate_pct": 39.5,
+    "roc_auc": 0.9998,
+    "accuracy": 99.28,
+    "f1_score": 0.9941
+  },
+  "2018": {
+    "total_customers": 51915,
+    "churn_rate_pct": 28.2,
+    "active_rate_pct": 71.8,
+    "roc_auc": 0.9998,
+    "accuracy": 99.45,
+    "f1_score": 0.996
+  },
+  "2017": {
+    "total_customers": 43233,
+    "churn_rate_pct": 99.0,
+    "active_rate_pct": 1.0,
+    "roc_auc": 0.9998,
+    "accuracy": 99.12,
+    "f1_score": 0.993
+  },
+  "2016": {
+    "total_customers": 310,
+    "churn_rate_pct": 98.4,
+    "active_rate_pct": 1.6,
+    "roc_auc": 0.9998,
+    "accuracy": 98.9,
+    "f1_score": 0.9915
+  }
+}

@@ -1,0 +1,210 @@
+{
+  "all": [
+    {
+      "year": "all",
+      "macro_region": "Southeast",
+      "total_orders": 67706,
+      "unique_customers": 65410,
+      "total_revenue": 10232323.5,
+      "freight_revenue": 1344930.44,
+      "aov": 151.13,
+      "freight_share_pct": 13.14
+    },
+    {
+      "year": "all",
+      "macro_region": "South",
+      "total_orders": 14042,
+      "unique_customers": 13599,
+      "total_revenue": 2296975.8,
+      "freight_revenue": 343034.68,
+      "aov": 163.58,
+      "freight_share_pct": 14.93
+    },
+    {
+      "year": "all",
+      "macro_region": "Northeast",
+      "total_orders": 9336,
+      "unique_customers": 9089,
+      "total_revenue": 1880799.54,
+      "freight_revenue": 335305.79,
+      "aov": 201.46,
+      "freight_share_pct": 17.83
+    },
+    {
+      "year": "all",
+      "macro_region": "Central-West",
+      "total_orders": 5744,
+      "unique_customers": 5563,
+      "total_revenue": 1023062.0,
+      "freight_revenue": 152599.94,
+      "aov": 178.11,
+      "freight_share_pct": 14.92
+    },
+    {
+      "year": "all",
+      "macro_region": "North",
+      "total_orders": 1838,
+      "unique_customers": 1782,
+      "total_revenue": 410392.4,
+      "freight_revenue": 76038.69,
+      "aov": 223.28,
+      "freight_share_pct": 18.53
+    }
+  ],
+  "2016": [
+    {
+      "year": "2016",
+      "macro_region": "Southeast",
+      "total_orders": 203,
+      "unique_customers": 200,
+      "total_revenue": 35665.09,
+      "freight_revenue": 3978.82,
+      "aov": 175.69,
+      "freight_share_pct": 11.16
+    },
+    {
+      "year": "2016",
+      "macro_region": "South",
+      "total_orders": 54,
+      "unique_customers": 54,
+      "total_revenue": 9861.92,
+      "freight_revenue": 1331.73,
+      "aov": 182.63,
+      "freight_share_pct": 13.5
+    },
+    {
+      "year": "2016",
+      "macro_region": "Northeast",
+      "total_orders": 33,
+      "unique_customers": 33,
+      "total_revenue": 7310.45,
+      "freight_revenue": 1297.13,
+      "aov": 221.53,
+      "freight_share_pct": 17.74
+    },
+    {
+      "year": "2016",
+      "macro_region": "Central-West",
+      "total_orders": 16,
+      "unique_customers": 16,
+      "total_revenue": 2857.41,
+      "freight_revenue": 501.46,
+      "aov": 178.59,
+      "freight_share_pct": 17.55
+    },
+    {
+      "year": "2016",
+      "macro_region": "North",
+      "total_orders": 6,
+      "unique_customers": 6,
+      "total_revenue": 1488.34,
+      "freight_revenue": 288.15,
+      "aov": 248.06,
+      "freight_share_pct": 19.36
+    }
+  ],
+  "2017": [
+    {
+      "year": "2017",
+      "macro_region": "Southeast",
+      "total_orders": 29999,
+      "unique_customers": 29074,
+      "total_revenue": 4545511.42,
+      "freight_revenue": 583815.21,
+      "aov": 151.52,
+      "freight_share_pct": 12.84
+    },
+    {
+      "year": "2017",
+      "macro_region": "South",
+      "total_orders": 6574,
+      "unique_customers": 6381,
+      "total_revenue": 1037872.63,
+      "freight_revenue": 149850.33,
+      "aov": 157.88,
+      "freight_share_pct": 14.44
+    },
+    {
+      "year": "2017",
+      "macro_region": "Northeast",
+      "total_orders": 4490,
+      "unique_customers": 4370,
+      "total_revenue": 884588.05,
+      "freight_revenue": 151133.21,
+      "aov": 197.01,
+      "freight_share_pct": 17.09
+    },
+    {
+      "year": "2017",
+      "macro_region": "Central-West",
+      "total_orders": 2570,
+      "unique_customers": 2491,
+      "total_revenue": 470217.71,
+      "freight_revenue": 65710.92,
+      "aov": 182.96,
+      "freight_share_pct": 13.97
+    },
+    {
+      "year": "2017",
+      "macro_region": "North",
+      "total_orders": 946,
+      "unique_customers": 918,
+      "total_revenue": 204482.62,
+      "freight_revenue": 36355.78,
+      "aov": 216.15,
+      "freight_share_pct": 17.78
+    }
+  ],
+  "2018": [
+    {
+      "year": "2018",
+      "macro_region": "Southeast",
+      "total_orders": 37504,
+      "unique_customers": 36626,
+      "total_revenue": 5651146.99,
+      "freight_revenue": 757136.41,
+      "aov": 150.68,
+      "freight_share_pct": 13.4
+    },
+    {
+      "year": "2018",
+      "macro_region": "South",
+      "total_orders": 7414,
+      "unique_customers": 7261,
+      "total_revenue": 1249241.25,
+      "freight_revenue": 191852.62,
+      "aov": 168.5,
+      "freight_share_pct": 15.36
+    },
+    {
+      "year": "2018",
+      "macro_region": "Northeast",
+      "total_orders": 4813,
+      "unique_customers": 4726,
+      "total_revenue": 988901.04,
+      "freight_revenue": 182875.45,
+      "aov": 205.46,
+      "freight_share_pct": 18.49
+    },
+    {
+      "year": "2018",
+      "macro_region": "Central-West",
+      "total_orders": 3158,
+      "unique_customers": 3083,
+      "total_revenue": 549986.88,
+      "freight_revenue": 86387.56,
+      "aov": 174.16,
+      "freight_share_pct": 15.71
+    },
+    {
+      "year": "2018",
+      "macro_region": "North",
+      "total_orders": 886,
+      "unique_customers": 874,
+      "total_revenue": 204421.44,
+      "freight_revenue": 39394.76,
+      "aov": 230.72,
+      "freight_share_pct": 19.27
+    }
+  ]
+}

@@ -128,6 +128,19 @@ def fallback_revenue_trend(year):
 
 
 def fallback_top_products(metric, limit, year):
+    prod_json = M4_DIR / "top_products_by_year.json"
+    if prod_json.exists():
+        try:
+            with open(prod_json) as f:
+                data = json.load(f)
+                y_key = str(year)
+                year_dict = data.get(y_key, data.get("all", {}))
+                records = year_dict.get(metric, year_dict.get("revenue", []))
+                if records:
+                    return pd.DataFrame(records[:limit])
+        except Exception:
+            pass
+
     if metric == "units":
         p_file = M3_DIR / "best_selling_products.csv"
     elif metric == "profit":
@@ -158,6 +171,17 @@ def fallback_top_products(metric, limit, year):
 
 
 def fallback_categories(limit, year):
+    cat_json = M4_DIR / "categories_by_year.json"
+    if cat_json.exists():
+        try:
+            with open(cat_json) as f:
+                data = json.load(f)
+                records = data.get(str(year), data.get("all", []))
+                if records:
+                    return pd.DataFrame(records[:limit])
+        except Exception:
+            pass
+
     c_file = M3_DIR / "category_performance_scorecard.csv"
     if c_file.exists():
         df = pd.read_csv(c_file)
@@ -176,6 +200,17 @@ def fallback_categories(limit, year):
 
 
 def fallback_regions(year):
+    reg_json = M4_DIR / "regional_by_year.json"
+    if reg_json.exists():
+        try:
+            with open(reg_json) as f:
+                data = json.load(f)
+                records = data.get(str(year), data.get("all", []))
+                if records:
+                    return pd.DataFrame(records)
+        except Exception:
+            pass
+
     r_file = M3_DIR / "revenue_by_macro_region.csv"
     if r_file.exists():
         df = pd.read_csv(r_file)
@@ -544,10 +579,42 @@ def get_regions():
 
 @app.route("/api/marketing")
 def get_marketing():
+    year = request.args.get("year", "all")
+    mkt_json = M4_DIR / "marketing_by_year.json"
+    if mkt_json.exists():
+        try:
+            with open(mkt_json) as f:
+                data = json.load(f)
+                records = data.get(str(year), data.get("all", []))
+                if records:
+                    return jsonify(records)
+        except Exception:
+            pass
+
     mkt_file = M3_DIR / "marketing_channel_roi.csv"
     if mkt_file.exists():
         df = pd.read_csv(mkt_file)
         return jsonify(df.to_dict(orient="records"))
+    return jsonify([])
+
+
+# =====================================================================
+# API: RETURNS REASONS (FILTERABLE BY YEAR)
+# =====================================================================
+
+@app.route("/api/returns-reasons")
+def get_returns_reasons():
+    year = request.args.get("year", "all")
+    ret_json = M4_DIR / "returns_by_year.json"
+    if ret_json.exists():
+        try:
+            with open(ret_json) as f:
+                data = json.load(f)
+                records = data.get(str(year), data.get("all", []))
+                if records:
+                    return jsonify(records)
+        except Exception:
+            pass
     return jsonify([])
 
 
@@ -557,11 +624,32 @@ def get_marketing():
 
 @app.route("/api/churn-stats")
 def get_churn_stats():
+    year = request.args.get("year", "all")
+    churn_yearly = M4_DIR / "churn_by_year.json"
     eval_file = M4_DIR / "churn_evaluation.json"
+    base_eval = {}
     if eval_file.exists():
-        with open(eval_file) as f:
-            return jsonify(json.load(f))
-    return jsonify({})
+        try:
+            with open(eval_file) as f:
+                base_eval = json.load(f)
+        except Exception:
+            pass
+
+    if churn_yearly.exists():
+        try:
+            with open(churn_yearly) as f:
+                c_data = json.load(f)
+                y_info = c_data.get(str(year), c_data.get("all", {}))
+                base_eval["year"] = str(year)
+                if "churn_rate_pct" in y_info:
+                    base_eval["churn_rate_pct"] = y_info["churn_rate_pct"]
+                if "active_rate_pct" in y_info:
+                    base_eval["active_rate_pct"] = y_info["active_rate_pct"]
+                if "total_customers" in y_info:
+                    base_eval["total_customers"] = y_info["total_customers"]
+        except Exception:
+            pass
+    return jsonify(base_eval)
 
 
 @app.route("/api/predict-churn", methods=["POST"])

@@ -106,6 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
         loadCategoryPerformance();
         loadRegionalBreakdown();
         loadMarketingPerformance();
+        loadReturnReasons();
         loadChurnMetrics();
         loadClusterSummary();
         loadSalesForecast();
@@ -459,11 +460,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const res = await fetch(`/api/marketing?year=${state.year}`);
             const data = await res.json();
 
-            const channels = data.map(d => d.channel);
-            const spends = data.map(d => d.marketing_spend);
-            const revs = data.map(d => d.attributed_revenue);
-            const cacs = data.map(d => d.cac);
-            const roas = data.map(d => d.roas);
+            const channels = data.map(d => d.channel || d.channel_name || "General");
+            const spends = data.map(d => Number(d.marketing_spend) || 0);
+            const revs = data.map(d => Number(d.attributed_revenue) || 0);
+            const cacs = data.map(d => Number(d.cac) || 0);
+            const roas = data.map(d => Number(d.roas) || 0);
 
             // Spend vs Revenue in Marketing Tab
             const optionsMktSpend = {
@@ -510,15 +511,24 @@ document.addEventListener("DOMContentLoaded", () => {
             tbody.innerHTML = "";
             data.forEach(ch => {
                 const tr = document.createElement("tr");
+                const chName = ch.channel || ch.channel_name || "General";
+                const spend = Number(ch.marketing_spend) || 0;
+                const orders = Number(ch.total_orders || ch.total_conversions) || 0;
+                const rev = Number(ch.attributed_revenue) || 0;
+                const cac = Number(ch.cac) || (orders > 0 ? spend / orders : 0);
+                const aov = Number(ch.channel_aov) || (orders > 0 ? rev / orders : 0);
+                const rVal = Number(ch.roas) || (spend > 0 ? rev / spend : 0);
+                const roi = Number(ch.marketing_roi_pct || ch.roi_pct) || ((rVal - 1) * 100);
+
                 tr.innerHTML = `
-                    <td><strong>${ch.channel}</strong></td>
-                    <td>R$ ${Number(ch.marketing_spend).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
-                    <td>${Number(ch.total_orders).toLocaleString()}</td>
-                    <td><strong>R$ ${Number(ch.attributed_revenue).toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></td>
-                    <td style="color: #F87171;">R$ ${ch.cac.toFixed(2)}</td>
-                    <td>R$ ${ch.channel_aov.toFixed(2)}</td>
-                    <td style="color: #34D399; font-weight: 700;">${ch.roas.toFixed(1)}x</td>
-                    <td>+${ch.marketing_roi_pct.toFixed(1)}%</td>
+                    <td><strong>${chName}</strong></td>
+                    <td>R$ ${spend.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td>${orders.toLocaleString()}</td>
+                    <td><strong>R$ ${rev.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></td>
+                    <td style="color: #F87171;">R$ ${cac.toFixed(2)}</td>
+                    <td>R$ ${aov.toFixed(2)}</td>
+                    <td style="color: #34D399; font-weight: 700;">${rVal.toFixed(1)}x</td>
+                    <td>+${roi.toFixed(1)}%</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -529,28 +539,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 3.7 Load Return Reasons Donut
     async function loadReturnReasons() {
-        const categories = ["Exchange Request", "Canceled Pre-Delivery", "Refund Request", "Defective/Damaged", "Dissatisfaction", "Out of Stock"];
-        const values = [35.4, 21.0, 17.2, 15.1, 11.0, 0.3];
-        const optionsRet = {
-            series: values,
-            labels: categories,
-            chart: { height: 330, type: "pie", background: "transparent" },
-            theme: { mode: "dark" },
-            colors: ["#3B82F6", "#EF4444", "#F59E0B", "#8B5CF6", "#10B981", "#64748B"],
-            legend: { position: "bottom", labels: { colors: "#F8FAFC" } },
-            stroke: { width: 0 },
-            tooltip: { y: { formatter: val => `${val}% of refunds` } }
-        };
-        if (state.charts.returnsReasons) state.charts.returnsReasons.destroy();
-        state.charts.returnsReasons = new ApexCharts(document.getElementById("chart-returns-reasons"), optionsRet);
-        state.charts.returnsReasons.render();
+        try {
+            const res = await fetch(`/api/returns-reasons?year=${state.year}`);
+            const data = await res.json();
+            let categories = [];
+            let values = [];
+
+            if (data && data.length > 0) {
+                categories = data.map(d => d.reason);
+                values = data.map(d => d.percentage);
+            } else {
+                categories = ["Exchange Request", "Canceled Pre-Delivery", "Refund Request", "Defective/Damaged", "Dissatisfaction", "Out of Stock"];
+                values = [35.4, 21.0, 17.2, 15.1, 11.0, 0.3];
+            }
+
+            const optionsRet = {
+                series: values,
+                labels: categories,
+                chart: { height: 330, type: "pie", background: "transparent" },
+                theme: { mode: "dark" },
+                colors: ["#3B82F6", "#EF4444", "#F59E0B", "#8B5CF6", "#10B981", "#64748B"],
+                legend: { position: "bottom", labels: { colors: "#F8FAFC" } },
+                stroke: { width: 0 },
+                tooltip: { y: { formatter: val => `${val}% of refunds` } }
+            };
+            if (state.charts.returnsReasons) state.charts.returnsReasons.destroy();
+            state.charts.returnsReasons = new ApexCharts(document.getElementById("chart-returns-reasons"), optionsRet);
+            state.charts.returnsReasons.render();
+        } catch (err) {
+            console.error("Error loading return reasons:", err);
+        }
     }
     loadReturnReasons();
 
     // 3.8 Load Churn Model Metrics & Simulator
     async function loadChurnMetrics() {
         try {
-            const res = await fetch("/api/churn-stats");
+            const res = await fetch(`/api/churn-stats?year=${state.year}`);
             const data = await res.json();
 
             if (data.roc_auc) {

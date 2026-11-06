@@ -1,0 +1,115 @@
+{
+  "all": [
+    {
+      "reason": "Product Return / Exchange Request",
+      "count": 913,
+      "percentage": 35.4
+    },
+    {
+      "reason": "Customer Canceled Before Delivery",
+      "count": 542,
+      "percentage": 21.0
+    },
+    {
+      "reason": "Refund Requested / Order Cancelation",
+      "count": 443,
+      "percentage": 17.2
+    },
+    {
+      "reason": "Product Defect / Damaged in Transit",
+      "count": 389,
+      "percentage": 15.1
+    },
+    {
+      "reason": "Customer Dissatisfaction",
+      "count": 284,
+      "percentage": 11.0
+    },
+    {
+      "reason": "Item Out of Stock / Unavailable",
+      "count": 7,
+      "percentage": 0.3
+    }
+  ],
+  "2016": [
+    {
+      "reason": "Customer Canceled Before Delivery",
+      "count": 15,
+      "percentage": 44.1
+    },
+    {
+      "reason": "Item Out of Stock / Unavailable",
+      "count": 7,
+      "percentage": 20.6
+    },
+    {
+      "reason": "Product Return / Exchange Request",
+      "count": 7,
+      "percentage": 20.6
+    },
+    {
+      "reason": "Customer Dissatisfaction",
+      "count": 4,
+      "percentage": 11.8
+    },
+    {
+      "reason": "Product Defect / Damaged in Transit",
+      "count": 1,
+      "percentage": 2.9
+    }
+  ],
+  "2017": [
+    {
+      "reason": "Product Return / Exchange Request",
+      "count": 361,
+      "percentage": 33.8
+    },
+    {
+      "reason": "Customer Canceled Before Delivery",
+      "count": 247,
+      "percentage": 23.1
+    },
+    {
+      "reason": "Refund Requested / Order Cancelation",
+      "count": 188,
+      "percentage": 17.6
+    },
+    {
+      "reason": "Product Defect / Damaged in Transit",
+      "count": 166,
+      "percentage": 15.6
+    },
+    {
+      "reason": "Customer Dissatisfaction",
+      "count": 105,
+      "percentage": 9.8
+    }
+  ],
+  "2018": [
+    {
+      "reason": "Product Return / Exchange Request",
+      "count": 545,
+      "percentage": 36.9
+    },
+    {
+      "reason": "Customer Canceled Before Delivery",
+      "count": 280,
+      "percentage": 19.0
+    },
+    {
+      "reason": "Refund Requested / Order Cancelation",
+      "count": 255,
+      "percentage": 17.3
+    },
+    {
+      "reason": "Product Defect / Damaged in Transit",
+      "count": 222,
+      "percentage": 15.0
+    },
+    {
+      "reason": "Customer Dissatisfaction",
+      "count": 175,
+      "percentage": 11.8
+    }
+  ]
+}

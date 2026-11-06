@@ -1,0 +1,154 @@
+{
+  "all": [
+    {
+      "channel_name": "Paid Search",
+      "campaigns": 2,
+      "marketing_spend": 815492.32,
+      "total_conversions": 41441,
+      "attributed_revenue": 6991047.19,
+      "cac": 19.68,
+      "roas": 8.57
+    },
+    {
+      "channel_name": "Paid Social",
+      "campaigns": 2,
+      "marketing_spend": 975051.59,
+      "total_conversions": 35520,
+      "attributed_revenue": 5991159.6,
+      "cac": 27.45,
+      "roas": 6.14
+    },
+    {
+      "channel_name": "Email Marketing",
+      "campaigns": 1,
+      "marketing_spend": 88803.51,
+      "total_conversions": 11841,
+      "attributed_revenue": 1998078.63,
+      "cac": 7.5,
+      "roas": 22.5
+    },
+    {
+      "channel_name": "Affiliate",
+      "campaigns": 1,
+      "marketing_spend": 244728.88,
+      "total_conversions": 9867,
+      "attributed_revenue": 1664156.47,
+      "cac": 24.8,
+      "roas": 6.8
+    }
+  ],
+  "2016": [
+    {
+      "channel_name": "Paid Search",
+      "campaigns": 2,
+      "marketing_spend": 2949.12,
+      "total_conversions": 133,
+      "attributed_revenue": 25271.61,
+      "cac": 22.17,
+      "roas": 8.57
+    },
+    {
+      "channel_name": "Paid Social",
+      "campaigns": 2,
+      "marketing_spend": 3508.22,
+      "total_conversions": 115,
+      "attributed_revenue": 21565.44,
+      "cac": 30.51,
+      "roas": 6.15
+    },
+    {
+      "channel_name": "Email Marketing",
+      "campaigns": 1,
+      "marketing_spend": 320.99,
+      "total_conversions": 39,
+      "attributed_revenue": 7222.27,
+      "cac": 8.23,
+      "roas": 22.5
+    },
+    {
+      "channel_name": "Affiliate",
+      "campaigns": 1,
+      "marketing_spend": 884.53,
+      "total_conversions": 33,
+      "attributed_revenue": 6014.83,
+      "cac": 26.8,
+      "roas": 6.8
+    }
+  ],
+  "2017": [
+    {
+      "channel_name": "Paid Search",
+      "campaigns": 2,
+      "marketing_spend": 367808.34,
+      "total_conversions": 18722,
+      "attributed_revenue": 3153168.91,
+      "cac": 19.65,
+      "roas": 8.57
+    },
+    {
+      "channel_name": "Paid Social",
+      "campaigns": 2,
+      "marketing_spend": 439817.27,
+      "total_conversions": 16047,
+      "attributed_revenue": 2702323.09,
+      "cac": 27.41,
+      "roas": 6.14
+    },
+    {
+      "channel_name": "Email Marketing",
+      "campaigns": 1,
+      "marketing_spend": 40050.84,
+      "total_conversions": 5349,
+      "attributed_revenue": 901143.49,
+      "cac": 7.49,
+      "roas": 22.5
+    },
+    {
+      "channel_name": "Affiliate",
+      "campaigns": 1,
+      "marketing_spend": 110345.26,
+      "total_conversions": 4457,
+      "attributed_revenue": 750347.83,
+      "cac": 24.76,
+      "roas": 6.8
+    }
+  ],
+  "2018": [
+    {
+      "channel_name": "Paid Search",
+      "campaigns": 2,
+      "marketing_spend": 444734.86,
+      "total_conversions": 22586,
+      "attributed_revenue": 3812606.67,
+      "cac": 19.69,
+      "roas": 8.57
+    },
+    {
+      "channel_name": "Paid Social",
+      "campaigns": 2,
+      "marketing_spend": 531726.1,
+      "total_conversions": 19358,
+      "attributed_revenue": 3267271.07,
+      "cac": 27.47,
+      "roas": 6.14
+    },
+    {
+      "channel_name": "Email Marketing",
+      "campaigns": 1,
+      "marketing_spend": 48431.68,
+      "total_conversions": 6453,
+      "attributed_revenue": 1089712.87,
+      "cac": 7.51,
+      "roas": 22.5
+    },
+    {
+      "channel_name": "Affiliate",
+      "campaigns": 1,
+      "marketing_spend": 133499.09,
+      "total_conversions": 5377,
+      "attributed_revenue": 907793.81,
+      "cac": 24.83,
+      "roas": 6.8
+    }
+  ]
+}
