@@ -2,21 +2,21 @@
 
 **Academic Session:** FALL 2026–27  
 **Department / School:** School of Computer Science and Engineering (SCOPE)  
-**Institution:** Vellore Institute of Technology (VIT), Vellore, Tamil Nadu, India  
+**Institution:** VIT-AP University, Amaravati, Andhra Pradesh, India  
 
 ---
 
 ### Author Information:
 | Student Name | Registration No. | School / Affiliation |
 |---|---|---|
-| **Gajjala Srithika** | 23BCE7911 | School of Computer Science and Engineering (SCOPE), VIT Vellore |
-| **Papasani Suhitha** | 23BCE7826 | School of Computer Science and Engineering (SCOPE), VIT Vellore |
-| **Ala Venkata Veera Ritwik** | 23BCE9633 | School of Computer Science and Engineering (SCOPE), VIT Vellore |
-| **Akshay Sharma** | 23BCE9668 | School of Computer Science and Engineering (SCOPE), VIT Vellore |
+| **Gajjala Srithika** | 23BCE7911 | School of Computer Science and Engineering (SCOPE), VIT-AP University |
+| **Papasani Suhitha** | 23BCE7826 | School of Computer Science and Engineering (SCOPE), VIT-AP University |
+| **Ala Venkata Veera Ritwik** | 23BCE9633 | School of Computer Science and Engineering (SCOPE), VIT-AP University |
+| **Akshay Sharma** | 23BCE9668 | School of Computer Science and Engineering (SCOPE), VIT-AP University |
 
 **Faculty Capstone Guide:**  
 **Prof. N. Lakshmipathi Anantha**  
-School of Computer Science and Engineering (SCOPE), Vellore Institute of Technology (VIT), Vellore  
+School of Computer Science and Engineering (SCOPE), VIT-AP University, Amaravati, Andhra Pradesh, India  
 
 ---
 
@@ -354,3 +354,4 @@ Future work will explore:
 10. R. J. Hyndman and G. Athanasopoulos, *Forecasting: Principles and Practice*, 2nd ed. Melbourne, Australia: OTexts, 2018.
 11. E. S. Gardner Jr, "Exponential smoothing: The state of the art," *Journal of Forecasting*, vol. 4, no. 1, pp. 1–28, 1985.
 12. F. Pedregosa et al., "Scikit-learn: Machine learning in Python," *Journal of Machine Learning Research*, vol. 12, pp. 2825–2830, 2011.
+

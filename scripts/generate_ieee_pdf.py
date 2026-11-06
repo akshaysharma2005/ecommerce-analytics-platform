@@ -1,0 +1,493 @@
+import os
+from playwright.sync_api import sync_playwright
+
+html_content = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NEXUS.AI: An End-to-End Enterprise E-Commerce Customer and Revenue Intelligence Platform</title>
+<style>
+  @page {
+    size: letter;
+    margin: 0.65in 0.65in 0.75in 0.65in;
+    @bottom-right {
+      content: counter(page);
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 9pt;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 9.5pt;
+    line-height: 1.18;
+    color: #000;
+    margin: 0;
+    padding: 0;
+    text-align: justify;
+    text-justify: inter-word;
+  }
+
+  .title-block {
+    text-align: center;
+    margin-bottom: 14px;
+    padding-bottom: 6px;
+  }
+
+  .paper-title {
+    font-size: 18pt;
+    font-weight: bold;
+    line-height: 1.2;
+    margin: 0 0 4px 0;
+  }
+
+  .paper-subtitle {
+    font-size: 10pt;
+    font-style: italic;
+    color: #333;
+    margin: 0 0 12px 0;
+  }
+
+  .authors-grid {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto 8px auto;
+    max-width: 98%;
+    text-align: center;
+  }
+
+  .author-col {
+    flex: 1;
+    padding: 0 3px;
+  }
+
+  .author-name {
+    font-size: 9.5pt;
+    font-weight: bold;
+  }
+
+  .author-affil {
+    font-size: 8.2pt;
+    line-height: 1.2;
+    color: #222;
+  }
+
+  .guide-block {
+    text-align: center;
+    margin-top: 6px;
+    padding-top: 5px;
+    border-top: 0.5pt dashed #888;
+    font-size: 8.5pt;
+  }
+
+  .guide-name {
+    font-weight: bold;
+  }
+
+  .abstract-box {
+    margin: 8px auto 12px auto;
+    padding: 8px 12px;
+    border-top: 1pt solid #000;
+    border-bottom: 1pt solid #000;
+    font-size: 8.8pt;
+    line-height: 1.22;
+  }
+
+  .abstract-title {
+    font-weight: bold;
+    font-style: italic;
+  }
+
+  .index-terms {
+    margin-top: 5px;
+    font-size: 8.5pt;
+  }
+
+  .paper-body {
+    column-count: 2;
+    column-gap: 0.28in;
+    column-fill: balance;
+  }
+
+  h2.section-head {
+    font-size: 10pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 12px 0 5px 0;
+    letter-spacing: 0.5px;
+    break-after: avoid;
+  }
+
+  h3.subsection-head {
+    font-size: 9.2pt;
+    font-weight: bold;
+    font-style: italic;
+    margin: 8px 0 3px 0;
+    break-after: avoid;
+  }
+
+  p {
+    margin: 0 0 5px 0;
+    text-indent: 14px;
+  }
+
+  p.no-indent { text-indent: 0; }
+
+  .equation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5px 0;
+    padding: 2px 0;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 9pt;
+  }
+
+  .equation .math-expr {
+    flex-grow: 1;
+    text-align: center;
+  }
+
+  .equation .eq-num {
+    font-size: 8.5pt;
+    min-width: 25px;
+    text-align: right;
+  }
+
+  .table-container {
+    margin: 8px 0;
+    break-inside: avoid;
+    width: 100%;
+  }
+
+  .table-title {
+    font-size: 7.8pt;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 2px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7.6pt;
+    line-height: 1.15;
+    margin: 0 auto;
+  }
+
+  table thead tr th {
+    border-top: 1.2pt solid #000;
+    border-bottom: 0.8pt solid #000;
+    padding: 2px 2px;
+    text-align: left;
+    font-weight: bold;
+  }
+
+  table tbody tr td {
+    padding: 2px 2px;
+    border-bottom: 0.3pt solid #ddd;
+  }
+
+  table tfoot tr td, table tbody tr:last-child td {
+    border-bottom: 1.2pt solid #000;
+  }
+
+  .num-cell { text-align: right; }
+
+  .fig-anchor {
+    background: #f4f5f7;
+    border: 1pt dashed #0d3268;
+    padding: 5px 8px;
+    margin: 6px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 7.6pt;
+    line-height: 1.2;
+    color: #0d3268;
+    break-inside: avoid;
+  }
+
+  ol, ul {
+    margin: 3px 0 6px 0;
+    padding-left: 16px;
+  }
+
+  li {
+    margin-bottom: 2px;
+    font-size: 8.8pt;
+  }
+
+  .ref-list {
+    font-size: 7.8pt;
+    line-height: 1.2;
+    padding-left: 16px;
+    margin-top: 3px;
+  }
+
+  .ref-list li {
+    margin-bottom: 3px;
+    text-indent: -14px;
+    padding-left: 14px;
+    list-style-type: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="title-block">
+  <div class="paper-title">NEXUS.AI: An End-to-End Enterprise E-Commerce Customer and Revenue Intelligence Platform with Multi-Dimensional Star-Schema Analytics and Predictive Machine Learning</div>
+  <div class="paper-subtitle">Capstone Research Paper &mdash; Academic Session: Fall 2026&ndash;27</div>
+
+  <div class="authors-grid">
+    <div class="author-col">
+      <div class="author-name">Gajjala Srithika</div>
+      <div class="author-affil">Reg. No: 23BCE7911<br>SCOPE, VIT-AP University<br>Amaravati, Andhra Pradesh, India</div>
+    </div>
+    <div class="author-col">
+      <div class="author-name">Papasani Suhitha</div>
+      <div class="author-affil">Reg. No: 23BCE7826<br>SCOPE, VIT-AP University<br>Amaravati, Andhra Pradesh, India</div>
+    </div>
+    <div class="author-col">
+      <div class="author-name">Ala Venkata Veera Ritwik</div>
+      <div class="author-affil">Reg. No: 23BCE9633<br>SCOPE, VIT-AP University<br>Amaravati, Andhra Pradesh, India</div>
+    </div>
+    <div class="author-col">
+      <div class="author-name">Akshay Sharma</div>
+      <div class="author-affil">Reg. No: 23BCE9668<br>SCOPE, VIT-AP University<br>Amaravati, Andhra Pradesh, India</div>
+    </div>
+  </div>
+
+  <div class="guide-block">
+    <span class="guide-name">Faculty Capstone Guide: Prof. N. Lakshmipathi Anantha</span> &nbsp;|&nbsp; 
+    <span>School of Computer Science and Engineering (SCOPE), VIT-AP University, Amaravati, Andhra Pradesh, India</span>
+  </div>
+</div>
+
+<div class="abstract-box">
+  <span class="abstract-title">Abstract</span>&mdash;Contemporary electronic commerce marketplaces generate massive volumes of heterogeneous transactional data, yet enterprises frequently fail to synthesize raw records into actionable customer retention and revenue forecasting intelligence due to Online Transaction Processing (OLTP) bottlenecks and decoupled predictive pipelines. This paper presents <b>NEXUS.AI</b>, an enterprise-grade customer and revenue intelligence architecture deployed over 98,666 real-world orders and 95,458 customer profiles from the Brazilian marketplace dataset (Olist). The system coordinates: (i) an Online Analytical Processing (OLAP) star-schema data warehouse in PostgreSQL comprising 7 dimension tables, 6 fact tables, and 12 materialized analytical views; (ii) a multi-model predictive machine learning pipeline featuring a 13-feature Gradient Boosting customer churn classifier (ROC-AUC <b>0.9998</b>, accuracy <b>99.28%</b>, F1-score <b>0.9941</b>), an unsupervised <i>k</i>-Means customer segmentation framework (<i>k</i>=4, 63.73% variance explained across three principal components), and an additive damped Holt-Winters time-series revenue forecaster (MAPE <b>13.84%</b>); and (iii) a reactive, cloud-native Flask/ApexCharts presentation layer equipped with an offline JSON fallback cache that ensures high-availability serverless deployment on Vercel. Empirical evaluation reveals pronounced macroeconomic logistics disparities, with the Northern region enduring an 18.53% freight cost friction compared to 13.14% in the Southeast, while multi-channel attribution isolates Email Marketing as the highest-yielding acquisition mechanism (ROAS of <b>22.50&times;</b> and <b>575%</b> ROI). This unified architecture closes the loop between relational data warehousing, predictive modeling, and strategic executive execution.
+  <div class="index-terms">
+    <b><i>Index Terms</i></b>&mdash;E-Commerce Analytics, Star Schema Data Warehousing, Customer Churn Prediction, Gradient Boosting, K-Means Clustering, Holt-Winters Forecasting.
+  </div>
+</div>
+
+<div class="paper-body">
+
+  <h2 class="section-head">I. Introduction</h2>
+  <p>The global electronic commerce landscape has transitioned from simple transactional storefronts into complex, multi-sided marketplace ecosystems handling millions of concurrent customer interactions. While modern relational database management systems efficiently execute Online Transaction Processing (OLTP) under ACID guarantees, their Third Normal Form (3NF) structures impose prohibitive computational penalties when executing multi-table joins across millions of rows for longitudinal analysis [1]. Consequently, operational teams remain reliant on fragmented, batch-processed data extracts that fail to deliver real-time visibility into customer attrition, inventory demand fluctuations, or cross-regional logistical friction [2].</p>
+
+  <p>In non-contractual e-commerce environments, customer attrition is a latent phenomenon; customers do not officially cancel service but instead drift quietly into dormancy [3]. Without automated predictive intervention, marketing spend is inefficiently allocated toward acquiring new leads rather than retaining high-margin historical spenders. Furthermore, revenue forecasting frequently neglects macroeconomic calendar phenomena, causing critical supply-chain imbalances during seasonal demand surges such as Black Friday.</p>
+
+  <p>To overcome these architectural and operational challenges, this research designs, implements, and evaluates <b>NEXUS.AI</b>, a unified enterprise customer and revenue intelligence platform. Developed collaboratively across four specialized computer science engineering domains (Data Warehouse Engineering, Customer Behavioral Analytics, Unit Economic & Marketing Intelligence, and Predictive Machine Learning / Presentation Systems), NEXUS.AI establishes a direct operational bridge between normalized transactional ingestion and high-precision machine learning inference.</p>
+
+  <p>The remainder of this paper is structured as follows: Section II details the end-to-end system architecture, relational star schema design, feature engineering protocols, and predictive modeling algorithms. Section III provides an empirical analysis of model performance, customer segmentation archetypes, time-series projections, and macro-regional economics. Section IV concludes the paper with major contributions, architectural constraints, and pathways for future research.</p>
+
+  <h2 class="section-head">II. Methodology and System Architecture</h2>
+  
+  <p>NEXUS.AI is engineered as an end-to-end pipeline progressing from raw multi-table ingestion to dimensional modeling, analytical view materialization, predictive inference, and cloud-native dashboard rendering.</p>
+
+  <div class="fig-anchor">
+    [INSERT FIG. 1 HERE: System Block Diagram showing the multi-tier NEXUS.AI architecture, illustrating raw Olist dataset ingestion, PostgreSQL star schema (7 dimensions, 6 facts), 12 materialized analytical views, Scikit-Learn predictive modeling pipelines, and dual-mode Flask/ApexCharts presentation layer with Vercel serverless edge deployment]
+  </div>
+
+  <h3 class="subsection-head">A. Data Hygiene, Entity Resolution, and Dimensional Modeling</h3>
+  <p>The system was developed and validated on the official Brazilian Olist E-Commerce dataset spanning 98,666 orders executed between September 2016 and September 2018 across 95,458 distinct customers. Raw transactional logs underwent rigorous preprocessing: (i) temporal lifecycle sequences were validated to enforce strict chronological monotonicity: purchase &le; order approval &le; carrier dispatch &le; customer delivery; (ii) session checkout tokens (<span class="badge">customer_id</span>) were mapped to persistent entities (<span class="badge">customer_unique_id</span>), resolving customer identity fragmentation; and (iii) multi-tender payment splits (e.g., credit card combined with vouchers) were aggregated to compute true order monetary values.</p>
+
+  <p>The transformed data was modeled into an analytical Star Schema within a dedicated PostgreSQL schema (<span class="badge">ecommerce</span>):</p>
+  <ul>
+    <li><b>Dimension Tables (7)</b>: <span class="badge">dim_customer</span> (demographics, state, city, geohash), <span class="badge">dim_product</span> (physical dimensions, category taxonomy), <span class="badge">dim_seller</span> (merchant locations), <span class="badge">dim_date</span> (date key, year, quarter, month, day, day of week, week of year), <span class="badge">dim_location</span> (coordinate centroids), <span class="badge">dim_category_margin</span> (benchmark margins, 14.0% commission baseline), and <span class="badge">dim_campaign</span> (acquisition channel, audience).</li>
+    <li><b>Fact Tables (6)</b>: <span class="badge">fact_orders</span> (order grain, lifecycle timestamps, status), <span class="badge">fact_order_items</span> (item grain, unit price, freight), <span class="badge">fact_payments</span> (payment instrument, installment count), <span class="badge">fact_reviews</span> (survey score 1&ndash;5), <span class="badge">fact_returns</span> (damage flags, refund totals), and <span class="badge">fact_marketing_performance</span> (monthly impressions, clicks, leads, orders, spend).</li>
+  </ul>
+
+  <p>Twelve materialized SQL views were deployed to accelerate Online Analytical Processing (OLAP) queries to sub-second latencies, including <span class="badge">vw_order_revenue</span>, <span class="badge">vw_regional_revenue</span>, <span class="badge">vw_product_profitability</span>, and <span class="badge">vw_customer_revenue</span>.</p>
+
+  <div class="fig-anchor">
+    [INSERT FIG. 2 HERE: Flowchart detailing the end-to-end Machine Learning Pipeline: 13-feature engineering from PostgreSQL analytical views, standard z-score normalization, stratified 75/25 train/test partitioning, Gradient Boosting classifier optimization, k-Means clustering via Elbow heuristic, and additive damped Holt-Winters revenue forecasting with seasonal multipliers]
+  </div>
+
+  <h3 class="subsection-head">B. Predictive Machine Learning Pipelines</h3>
+
+  <p><b>1) Customer Churn Prediction:</b> In non-contractual commerce, churn occurs when a customer permanently halts purchasing. Customers exhibiting no repeat purchase activity within 180 days from their initial transaction were labeled as churned (<i>y</i>=1). Thirteen behavioral features were engineered for each unique customer vector <b>x</b><sub><i>i</i></sub>: <span class="badge">total_orders</span>, <span class="badge">total_items</span>, <span class="badge">total_spend</span>, <span class="badge">avg_order_value</span>, <span class="badge">basket_size</span>, <span class="badge">freight_ratio</span>, <span class="badge">avg_installments</span>, <span class="badge">uses_credit_card</span>, <span class="badge">uses_boleto</span>, <span class="badge">avg_review_score</span>, <span class="badge">has_bad_review</span>, <span class="badge">has_returned</span>, and <span class="badge">tenure_days</span>.</p>
+
+  <p>A Gradient Boosting Decision Tree (GBDT) ensemble [4] was trained using deviance loss:</p>
+
+  <div class="equation">
+    <div class="math-expr"><i>L</i>(<i>y</i>, <i>p</i>) = &minus; [<i>y</i> ln(<i>p</i>) + (1 &minus; <i>y</i>) ln(1 &minus; <i>p</i>)]</div>
+    <div class="eq-num">(1)</div>
+  </div>
+
+  <p>At each boosting iteration <i>m</i>, regression trees fit the negative gradients (pseudo-residuals):</p>
+
+  <div class="equation">
+    <div class="math-expr"><i>r</i><sub><i>im</i></sub> = &minus; [&part;<i>L</i>(<i>y</i><sub><i>i</i></sub>, <i>F</i><sub><i>m</i>&minus;1</sub>(<b>x</b><sub><i>i</i></sub>)) / &part;<i>F</i><sub><i>m</i>&minus;1</sub>(<b>x</b><sub><i>i</i></sub>)] = <i>y</i><sub><i>i</i></sub> &minus; <i>p</i>(<b>x</b><sub><i>i</i></sub>)</div>
+    <div class="eq-num">(2)</div>
+  </div>
+
+  <p>The model was trained with shrinkage &nu; = 0.1, tree depth 3, and 100 estimators, evaluated across a stratified 75/25 train/test split (<i>N</i><sub>test</sub> = 23,865).</p>
+
+  <p><b>2) Unsupervised Customer Segmentation:</b> Continuous behavioral attributes were standardized using z-score normalization. The <i>k</i>-Means objective function minimizes the within-cluster sum of squares (WCSS):</p>
+
+  <div class="equation">
+    <div class="math-expr"><i>J</i> = &sum;<sub><i>j</i>=1</sub><sup><i>k</i></sup> &sum;<sub><b>x</b>&isin;<i>S</i><sub><i>j</i></sub></sub> ||<b>x</b> &minus; <b>&mu;</b><sub><i>j</i></sub>||<sup>2</sup></div>
+    <div class="eq-num">(3)</div>
+  </div>
+
+  <p>Cluster count optimization was established across <i>k</i> &isin; [2, 7] using the Elbow method, finding an optimal inflection at <i>k</i>=4. Principal Component Analysis (PCA) was computed to project the multi-dimensional customer vectors into three orthogonal principal axes, capturing 63.73% of cumulative variance (&lambda;<sub>1</sub> = 34.55%, &lambda;<sub>2</sub> = 14.90%, &lambda;<sub>3</sub> = 14.28%).</p>
+
+  <p><b>3) Time-Series Revenue Forecasting:</b> An Additive Damped Holt-Winters model [5] was implemented to capture trend and annual seasonality (<i>m</i>=12):</p>
+
+  <div class="equation">
+    <div class="math-expr"><i>l</i><sub><i>t</i></sub> = &alpha;(<i>y</i><sub><i>t</i></sub> &minus; <i>s</i><sub><i>t&minus;m</i></sub>) + (1 &minus; &alpha;)(<i>l</i><sub><i>t</i>&minus;1</sub> + &phi;<i>b</i><sub><i>t</i>&minus;1</sub>)</div>
+    <div class="eq-num">(4)</div>
+  </div>
+  <div class="equation">
+    <div class="math-expr"><i>b</i><sub><i>t</i></sub> = &beta;(<i>l</i><sub><i>t</i></sub> &minus; <i>l</i><sub><i>t</i>&minus;1</i></sub>) + (1 &minus; &beta;)&phi;<i>b</i><sub><i>t</i>&minus;1</sub></div>
+    <div class="eq-num">(5)</div>
+  </div>
+  <div class="equation">
+    <div class="math-expr"><i>s</i><sub><i>t</i></sub> = &gamma;(<i>y</i><sub><i>t</i></sub> &minus; <i>l</i><sub><i>t</i>&minus;1</i></sub> &minus; &phi;<i>b</i><sub><i>t</i>&minus;1</sub>) + (1 &minus; &gamma;)<i>s</i><sub><i>t&minus;m</i></sub></div>
+    <div class="eq-num">(6)</div>
+  </div>
+
+  <p>where &phi; &isin; (0, 1] represents the damping parameter, preventing linear trend divergence. Point forecasts <i>h</i> steps forward are generated via:</p>
+
+  <div class="equation">
+    <div class="math-expr"><i>&ycirc;</i><sub><i>t+h|t</i></sub> = <i>l</i><sub><i>t</i></sub> + &sum;<sub><i>i</i>=1</sub><sup><i>h</i></sup> &phi;<sup><i>i</i></sup> <i>b</i><sub><i>t</i></sub> + <i>s</i><sub><i>t+h&minus;m</i>(<i>k</i>+1)</sub></div>
+    <div class="eq-num">(7)</div>
+  </div>
+
+  <h3 class="subsection-head">C. Dual-Mode Serverless Presentation Architecture</h3>
+  <p>To deploy the analytical stack to serverless edge infrastructure (Vercel) without experiencing database connection pool exhaustion or cold-start timeouts, NEXUS.AI incorporates a Dual-Mode Resilience Architecture. The Flask backend dynamically queries PostgreSQL when a live connection exists. In serverless edge execution, it falls back to pre-computed, year-partitioned JSON data cubes, preserving client-side temporal reactivity across 2016, 2017, 2018, and All-Time views.</p>
+
+  <h2 class="section-head">III. Experimental Results and Discussion</h2>
+
+  <h3 class="subsection-head">A. Churn Prediction Performance</h3>
+  <p>The Gradient Boosting churn classifier was evaluated on 23,865 independent test samples. The model achieved an outstanding classification accuracy of <b>99.28%</b>, precision of <b>98.98%</b>, recall (sensitivity) of <b>99.83%</b>, F1-score of <b>0.9941</b>, and an Area Under the ROC Curve (ROC-AUC) of <b>0.9998</b> (Table I).</p>
+
+  <div class="table-container">
+    <div class="table-title">TABLE I. Churn Model Performance and Confusion Matrix</div>
+    <table>
+      <thead>
+        <tr><th>Metric</th><th class="num-cell">Score</th><th>Classification Cell</th><th class="num-cell">Count</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Accuracy</td><td class="num-cell"><b>99.28%</b></td><td>True Negatives (TN)</td><td class="num-cell">9,278</td></tr>
+        <tr><td>Precision</td><td class="num-cell"><b>98.98%</b></td><td>False Positives (FP)</td><td class="num-cell">148</td></tr>
+        <tr><td>Recall</td><td class="num-cell"><b>99.83%</b></td><td>False Negatives (FN)</td><td class="num-cell">24</td></tr>
+        <tr><td>F1-Score</td><td class="num-cell"><b>0.9941</b></td><td>True Positives (TP)</td><td class="num-cell">14,415</td></tr>
+        <tr><td>ROC-AUC</td><td class="num-cell"><b>0.9998</b></td><td>Total Test Instances</td><td class="num-cell">23,865</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="fig-anchor">
+    [INSERT FIG. 3 HERE: Data Plot showing the Receiver Operating Characteristic (ROC) curve exhibiting an AUC of 0.9998, juxtaposed with the Gini Feature Importance bar chart highlighting tenure_days (0.9881), total_orders (0.0084), freight_ratio (0.0007), and avg_review_score (0.0007)]
+  </div>
+
+  <p>Out of 14,439 actual churned customers in the test partition, only 24 were misclassified as active (False Negative Rate = 0.17%). Feature importance decomposition reveals that <span class="badge">tenure_days</span> carries 98.81% of the Gini splitting weight, demonstrating that in non-contractual retail, the temporal duration elapsed since the initial purchase is the overwhelmingly decisive signal of customer churn.</p>
+
+  <h3 class="subsection-head">B. Customer Segmentation Archetypes</h3>
+  <p>The <i>k</i>-Means model clustered the 95,458 customer base into four distinct behavioral personas (Table II):</p>
+
+  <div class="table-container">
+    <div class="table-title">TABLE II. Customer Segmentation Persona Profiles (k=4)</div>
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Persona Name</th><th class="num-cell">Count</th><th class="num-cell">% Base</th><th class="num-cell">Recency (d)</th><th class="num-cell">Orders</th><th class="num-cell">Spend (R$)</th><th class="num-cell">Review</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>0</td><td>VIP Champions</td><td class="num-cell">67,744</td><td class="num-cell">70.97%</td><td class="num-cell">237.8</td><td class="num-cell">1.00</td><td class="num-cell">99.36</td><td class="num-cell">4.15</td></tr>
+        <tr><td>1</td><td>At-Risk High Spenders</td><td class="num-cell">22,999</td><td class="num-cell">24.09%</td><td class="num-cell">262.6</td><td class="num-cell">1.00</td><td class="num-cell">253.25</td><td class="num-cell">3.95</td></tr>
+        <tr><td>2</td><td>Emerging Buyers</td><td class="num-cell">1,868</td><td class="num-cell">1.96%</td><td class="num-cell">243.8</td><td class="num-cell">1.02</td><td class="num-cell">1,320.19</td><td class="num-cell">3.92</td></tr>
+        <tr><td>3</td><td>Value Seekers</td><td class="num-cell">2,847</td><td class="num-cell">2.98%</td><td class="num-cell">226.5</td><td class="num-cell">2.11</td><td class="num-cell">288.79</td><td class="num-cell">4.15</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Cluster 1 (*At-Risk High Spenders*, 24.09%) represents high historical value (mean spend R$ 253.25) that has lapsed into dormancy (262.6 days recency), identifying the prime target cohort for automated win-back credits. Cluster 3 represents the core multi-order loyalists (2.11 orders per customer).</p>
+
+  <h3 class="subsection-head">C. Time-Series Revenue Forecast</h3>
+  <p>The Holt-Winters model achieved a Mean Absolute Percentage Error (MAPE) of <b>13.84%</b> (MAE: R$ 88,107.57; RMSE: R$ 121,579.85) over historical validation. The 12-month forward horizon projects cumulative gross merchandise value of <b>R$ 12.30M</b>, peaking at <b>R$ 1,396,280.89</b> in November 2018 driven by the calibrated Black Friday seasonal multiplier (+38%).</p>
+
+  <h3 class="subsection-head">D. Macro-Regional Logistics and Marketing Attribution</h3>
+  <p>Empirical breakdown across Brazil's five macro-regions highlights acute geographic disparity (Table III). While the Southeast drives 64.58% of platform revenue (R$ 10.23M) with a 13.14% freight ratio, the Northern region incurs an <b>18.53%</b> shipping burden on an average order value of R$ 223.28, exposing a clear barrier to customer acquisition.</p>
+
+  <div class="table-container">
+    <div class="table-title">TABLE III. Macro-Regional Revenue and Marketing Attribution</div>
+    <table>
+      <thead>
+        <tr><th>Dimension / Entity</th><th class="num-cell">Spend / Orders</th><th class="num-cell">Total Rev (R$)</th><th class="num-cell">AOV / CAC</th><th class="num-cell">ROAS / Freight</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><b>Southeast Region</b></td><td class="num-cell">67,706 orders</td><td class="num-cell">10,232,323.50</td><td class="num-cell">R$ 151.13</td><td class="num-cell">13.14% freight</td></tr>
+        <tr><td><b>South Region</b></td><td class="num-cell">14,042 orders</td><td class="num-cell">2,296,975.80</td><td class="num-cell">R$ 163.58</td><td class="num-cell">14.93% freight</td></tr>
+        <tr><td><b>Northeast Region</b></td><td class="num-cell">9,336 orders</td><td class="num-cell">1,880,799.54</td><td class="num-cell">R$ 201.46</td><td class="num-cell">17.83% freight</td></tr>
+        <tr><td><b>North Region</b></td><td class="num-cell">1,838 orders</td><td class="num-cell">410,392.40</td><td class="num-cell">R$ 223.28</td><td class="num-cell"><b>18.53% freight</b></td></tr>
+        <tr><td colspan="5" style="border-top: 0.8pt solid #000; font-weight: bold; background: #fafafa;">Marketing Attribution (Total Spend: R$ 2,124,076.30)</td></tr>
+        <tr><td>Paid Search</td><td class="num-cell">R$ 815,492.32</td><td class="num-cell">6,991,047.19</td><td class="num-cell">CAC: R$ 19.68</td><td class="num-cell">ROAS: 8.57&times;</td></tr>
+        <tr><td>Paid Social</td><td class="num-cell">R$ 975,051.59</td><td class="num-cell">5,991,159.60</td><td class="num-cell">CAC: R$ 27.45</td><td class="num-cell">ROAS: 6.14&times;</td></tr>
+        <tr><td><b>Email Marketing</b></td><td class="num-cell">R$ 88,803.51</td><td class="num-cell">1,998,078.63</td><td class="num-cell"><b>CAC: R$ 7.50</b></td><td class="num-cell"><b>ROAS: 22.50&times;</b></td></tr>
+        <tr><td>Affiliate</td><td class="num-cell">R$ 244,728.88</td><td class="num-cell">1,664,156.47</td><td class="num-cell">CAC: R$ 24.80</td><td class="num-cell">ROAS: 6.80&times;</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>In marketing channel efficiency, Email Marketing emerged as the superior capital allocator, producing <b>22.50&times; ROAS</b> and <b>575% ROI</b> at a CAC of only <b>R$ 7.50</b>, compared to Paid Social's R$ 27.45 CAC.</p>
+
+  <h2 class="section-head">IV. Conclusion and Future Work</h2>
+  <p>This paper presented <b>NEXUS.AI</b>, a comprehensive enterprise e-commerce intelligence system unifying relational star-schema data warehousing with predictive machine learning and high-availability cloud analytics. The platform demonstrated superior empirical results: 99.28% churn classification accuracy, actionable 4-persona customer clustering, resilient seasonal revenue forecasting (13.84% MAPE), and robust dual-mode serverless edge execution on Vercel.</p>
+
+  <p>While highly effective, current limitations include the reliance on historical batch snapshots rather than real-time clickstream events, and linear seasonal smoothing during extreme macroeconomic volatility. Future research pathways comprise:</p>
+  <ul>
+    <li><b>Distributed Event Streaming</b>: Integrating Apache Kafka and Apache Flink for real-time clickstream event processing and real-time dynamic churn scoring.</li>
+    <li><b>Deep Sentiment Mining</b>: Deploying transformer-based language models (e.g., BERT/RoBERTa) to automatically extract latent seller defect signals from Portuguese customer review texts.</li>
+    <li><b>Dynamic Algorithmic Pricing</b>: Developing multi-armed bandit and reinforcement learning frameworks to optimize localized freight subsidies and promotional discount allocation.</li>
+  </ul>
+
+  <h2 class="section-head">References</h2>
+  <ul class="ref-list">
+    <li>[1] R. Kimball and M. Ross, <i>The Data Warehouse Toolkit: The Definitive Guide to Dimensional Modeling</i>, 3rd ed. Hoboken, NJ: John Wiley & Sons, 2013.</li>
+    <li>[2] P. C. Verhoef, "Understanding the effect of customer relationship management efforts on customer retention and customer share development," <i>Journal of Marketing</i>, vol. 67, no. 4, pp. 30&ndash;45, 2003.</li>
+    <li>[3] P. S. Fader, B. G. Hardie, and K. L. Lee, "Counting your customers the easy way: An alternative to the Pareto/NBD model," <i>Marketing Science</i>, vol. 24, no. 2, pp. 275&ndash;284, 2005.</li>
+    <li>[4] T. Chen and C. Guestrin, "XGBoost: A scalable tree boosting system," in <i>Proc. 22nd ACM SIGKDD Int. Conf. Knowl. Discovery Data Mining</i>, 2016, pp. 785&ndash;794.</li>
+    <li>[5] E. S. Gardner Jr, "Exponential smoothing: The state of the art," <i>Journal of Forecasting</i>, vol. 4, no. 1, pp. 1&ndash;28, 1985.</li>
+    <li>[6] T. Vafeiadis, K. I. Diamantaras, G. Sarigiannidis, and K. C. Chatzisavvas, "A comparison of machine learning techniques for customer churn prediction," <i>Simulation Modelling Practice and Theory</i>, vol. 55, pp. 1&ndash;9, 2015.</li>
+    <li>[7] J. A. Hartigan and M. A. Wong, "Algorithm AS 136: A k-means clustering algorithm," <i>Journal of the Royal Statistical Society. Series C (Applied Statistics)</i>, vol. 28, no. 1, pp. 100&ndash;108, 1979.</li>
+  </ul>
+
+</div>
+
+</body>
+</html>
+"""
+
+html_path = "/Users/makshaysharma/Desktop/ecommerce-intelligence/paper/ieee_research_paper.html"
+with open(html_path, "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+pdf_output_path = "/Users/makshaysharma/Desktop/ecommerce-intelligence/paper/IEEE_Research_Paper_NEXUS_AI.pdf"
+docs_pdf_path = "/Users/makshaysharma/Desktop/ecommerce-intelligence/docs/IEEE_Research_Paper_NEXUS_AI.pdf"
+
+print("Compiling PDF via Playwright...")
+with sync_playwright() as p:
+    browser = p.chromium.launch()
+    page = browser.new_page()
+    page.goto(f"file://{os.path.abspath(html_path)}")
+    page.wait_for_load_state("networkidle")
+    page.pdf(
+        path=pdf_output_path,
+        format="Letter",
+        print_background=True,
+        margin={"top": "0.6in", "bottom": "0.6in", "left": "0.55in", "right": "0.55in"},
+        display_header_footer=True,
+        header_template='<div style="font-size: 8pt; font-family: Times New Roman, serif; width: 100%; text-align: center; color: #666;">IEEE B.Tech Capstone Conference Paper &mdash; SCOPE, VIT-AP University, Fall 2026&ndash;27</div>',
+        footer_template='<div style="font-size: 8pt; font-family: Times New Roman, serif; width: 100%; text-align: right; padding-right: 0.6in; color: #555;"><span class="pageNumber"></span> of <span class="totalPages"></span></div>'
+    )
+    browser.close()
+
+import shutil
+shutil.copyfile(pdf_output_path, docs_pdf_path)
+print(f"PDF successfully written to: {pdf_output_path} and {docs_pdf_path}")
+print(f"File size: {os.path.getsize(pdf_output_path)} bytes")
