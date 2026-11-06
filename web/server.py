@@ -119,6 +119,10 @@ def fallback_revenue_trend(year):
                 df = df[df["year"] == int(year)]
             except ValueError:
                 pass
+        if "aov" not in df.columns and "monthly_aov" in df.columns:
+            df["aov"] = df["monthly_aov"]
+        if "rolling_3m_avg" not in df.columns and "rolling_3m_avg_revenue" in df.columns:
+            df["rolling_3m_avg"] = df["rolling_3m_avg_revenue"]
         return df
     return pd.DataFrame()
 
@@ -666,6 +670,35 @@ def get_forecast():
             "forecast": forecast_records
         })
     return jsonify({})
+
+
+# =====================================================================
+# API: DIRECT CSV REPORT EXPORT
+# =====================================================================
+
+@app.route("/api/export-report")
+def export_report_api():
+    year = request.args.get("year", "all")
+    monthly_file = M3_DIR / "monthly_revenue_growth.csv"
+    if monthly_file.exists():
+        df = pd.read_csv(monthly_file)
+        if year != "all":
+            try:
+                df = df[df["year"] == int(year)]
+            except ValueError:
+                pass
+        if "aov" not in df.columns and "monthly_aov" in df.columns:
+            df["aov"] = df["monthly_aov"]
+        if "rolling_3m_avg" not in df.columns and "rolling_3m_avg_revenue" in df.columns:
+            df["rolling_3m_avg"] = df["rolling_3m_avg_revenue"]
+        
+        csv_data = "\uFEFF" + df.to_csv(index=False)
+        return app.response_class(
+            csv_data,
+            mimetype="text/csv",
+            headers={"Content-Disposition": f"attachment; filename=nexus_revenue_report_{year}.csv"}
+        )
+    return jsonify({"error": "Report data not available"}), 404
 
 
 if __name__ == "__main__":
